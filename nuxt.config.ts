@@ -19,12 +19,9 @@ export default defineNuxtConfig({
   ],
 
   components: [
-      // Scans your atomic folders for auto-importing
       { path: '~/components/atoms', prefix: 'A' },
       { path: '~/components/molecules', prefix: 'M' },
       { path: '~/components/organisms', prefix: 'O' },
-
-      // Keep the default components folder if you still use it
       '~/components'
     ],
 

@@ -1,9 +1,8 @@
 # Carbonlog
 
-> **WIP** — An upcoming CO₂ measurement tool that uses [`@tgwf/co2`](https://www.thegreenwebfoundation.org/) and Puppeteer to estimate the carbon emissions of web pages. Honestly, I could do with a carbonlog of some of my own work. This project will be developed in stages. The beta version will be a public main...
-> :coffee:
+> **WIP** — An upcoming CO₂ measurement tool that uses [`@tgwf/co2`](https://www.thegreenwebfoundation.org/) and Puppeteer to estimate the carbon emissions of web pages. Honestly, I could do with a carbonlog of some of my own work. This project will be developed in stages. The beta version will be a public main.
 
-Built with Nuxt 4, Tailwind CSS 4, Supabase, and TypeScript.
+Built with Nuxt 4, Tailwind CSS 4, Supabase, and TypeScript :coffee:
 
 ## What it does
 
