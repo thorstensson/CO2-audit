@@ -1,0 +1,10 @@
+{
+  "semi": false,
+  "singleQuote": true,
+  "tabWidth": 2,
+  "trailingComma": "es5",
+  "printWidth": 80,
+  "vueIndentScriptAndStyle": true,
+  "plugins": ["prettier-plugin-tailwindcss"],
+  "tailwindStylesheet": "./assets/css/main.css"
+}
