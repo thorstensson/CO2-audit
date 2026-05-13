@@ -2,7 +2,6 @@
 import { ref } from "vue";
 
 const isOpen = ref(false);
-
 const navItems = ["WHY", "HOW", "CONTRIBUTE"];
 
 function toggle() {
@@ -19,15 +18,22 @@ function toggle() {
         <div class="w-full px-[4vw] py-4">
           <div class="flex items-center justify-between">
             <MHeader />
-            <ul class="flex items-center gap-8">
-              <li
-                v-for="item in navItems"
-                :key="item"
-                class="font-heading text-sm font-semibold tracking-widest text-black hover:text-gray-400 transition-colors duration-300 cursor-pointer"
-              >
-                {{ item }}
-              </li>
-            </ul>
+
+            <!-- 1. PLUGGED IN DESKTOP MOLECULE HERE -->
+            <div class="flex items-center gap-12">
+              <ul class="flex items-center gap-8">
+                <li
+                  v-for="item in navItems"
+                  :key="item"
+                  class="font-heading text-sm font-semibold tracking-widest text-black hover:text-gray-400 transition-colors duration-300 cursor-pointer"
+                >
+                  {{ item }}
+                </li>
+              </ul>
+
+              <MAuthControl mode="desktop" />
+            </div>
+
           </div>
         </div>
       </div>
@@ -52,17 +58,21 @@ function toggle() {
       <!-- Mobile: slide-in overlay from right -->
       <div
         :class="isOpen ? 'translate-x-0' : 'translate-x-full'"
-        class="fixed inset-0 z-40 md:hidden bg-white/80 backdrop-blur-sm flex items-center justify-end pr-[4vw] transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]"
+        class="fixed inset-0 z-40 md:hidden bg-white/80 backdrop-blur-sm flex flex-col justify-center items-end pr-[4vw] transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]"
       >
         <ul class="text-right space-y-10">
           <li
             v-for="item in navItems"
             :key="item"
             class="font-heading text-5xl font-semibold tracking-widest text-black hover:text-gray-400 transition-colors duration-300 cursor-pointer"
+            @click="isOpen = false"
           >
             {{ item }}
           </li>
         </ul>
+
+        <!-- 2. PLUGGED IN MOBILE MOLECULE HERE -->
+        <MAuthControl class="mt-10" mode="mobile" @click="isOpen = false" />
       </div>
     </nav>
 </template>

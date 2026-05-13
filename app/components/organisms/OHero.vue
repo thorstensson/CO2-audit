@@ -2,7 +2,7 @@
 
 <template>
   <!-- Hero section -->
-  <section class="pt-32 pb-24">
+  <section class="pt-32 pb-8">
     <div class="max-w-4xl mx-auto text-center">
       <h1
         class="font-heading text-6xl md:text-7xl lg:text-8xl font-bold leading-tight tracking-tight text-black"
@@ -16,9 +16,8 @@
         Track, analyze, and reduce your CO₂ emissions with precision. Built for
         developers who care about the planet.
       </p>
-      <div class="mt-10 flex items-center justify-center gap-4">
-        <AButton variant="primary" label="Get Started" />
-        <AButton variant="secondary" label="Learn More" />
+      <div class="mt-10 flex flex-col items-center gap-4">
+        <MSearchInput />
       </div>
     </div>
   </section>
