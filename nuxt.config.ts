@@ -40,12 +40,14 @@ export default defineNuxtConfig({
   ],
 
   routeRules: {
-      '/**': {
-        headers: {
-          'Content-Security-Policy': "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cloudflare.com; frame-src 'self' https://cloudflare.com;"
-        }
-      }
+    '/**': {
+      headers: {
+        // FIX: Added 'challenges.' directly before cloudflare.com
+        'Content-Security-Policy':
+          "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com; frame-src 'self' https://challenges.cloudflare.com;",
+      },
     },
+  },
 
   runtimeConfig: {
     // Private backend keys
