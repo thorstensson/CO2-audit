@@ -52,6 +52,20 @@ export default defineNuxtConfig({
     },
   },
 
+  // FIX: Properly closed development-only override block
+  $development: {
+    runtimeConfig: {
+      turnstile: {
+        secretKey: '1x00000000000000000000000000000000',
+      },
+      public: {
+        turnstile: {
+          siteKey: '1x00000000000000000000AA',
+        },
+      },
+    },
+  },
+
   components: [
     { path: '~/components/atoms', prefix: 'A' },
     { path: '~/components/molecules', prefix: 'M' },
@@ -84,7 +98,7 @@ export default defineNuxtConfig({
         src: `${fontBase}AspektaVF.woff2`,
         weights: ['100 900'],
         style: 'normal',
-      },
+      }, // <-- This bracket was missing in my previous edit
       {
         name: 'Outfit',
         provider: 'fontsource',

@@ -33,62 +33,70 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  // 3. Launch a headless browser instance safely knowing the user is human
-  const browser = await puppeteer.launch({
-    headless: true,
-    channel: 'chrome', // <-- Forces Puppeteer to launch your local system's Google Chrome
-    args: ['--no-sandbox', '--disable-setuid-sandbox'],
-  })
-
-  const page = await browser.newPage()
-
-  // 4. Track network bytes transfer size AND split them by resource categories
-  let totalBytes = 0
-  const breakdownBytes = {
-    html: 0,
-    css: 0,
-    javascript: 0,
-    images: 0,
-    fonts: 0,
-    other: 0,
-  }
-
-  page.on('response', (response) => {
-    const status = response.status()
-    // Only count successful or cached resource resolutions (ignore breaks/redirects)
-    if (status >= 200 && status < 400) {
-      const headers = response.headers()
-      const contentLength = headers['content-length']
-
-      if (contentLength) {
-        const bytes = parseInt(contentLength, 10)
-        totalBytes += bytes
-
-        // Extract Puppeteer's resource categorization string
-        const resourceType = response.request().resourceType()
-
-        // Sort bytes into matching breakdown buckets
-        if (resourceType === 'document') {
-          breakdownBytes.html += bytes
-        } else if (resourceType === 'stylesheet') {
-          breakdownBytes.css += bytes
-        } else if (resourceType === 'script') {
-          breakdownBytes.javascript += bytes
-        } else if (resourceType === 'image' || resourceType === 'media') {
-          breakdownBytes.images += bytes
-        } else if (resourceType === 'font') {
-          breakdownBytes.fonts += bytes
-        } else {
-          breakdownBytes.other += bytes
-        }
-      }
-    }
-  })
+  // 3. Smart Browser Connection: Use Browserless in production, local Chrome in development
+  const isProd = process.env.NODE_ENV === 'production'
+  let browser
 
   try {
+    if (isProd) {
+      browser = await puppeteer.connect({
+        browserWSEndpoint: `wss://chrome.browserless.io?token=${process.env.BROWSERLESS_TOKEN}`,
+      })
+    } else {
+      browser = await puppeteer.launch({
+        headless: true,
+        channel: 'chrome', // Forces Puppeteer to launch your local system's Google Chrome
+        args: ['--no-sandbox', '--disable-setuid-sandbox'],
+      })
+    }
+
+    const page = await browser.newPage()
+
+    // 4. Track network bytes transfer size AND split them by resource categories
+    let totalBytes = 0
+    const breakdownBytes = {
+      html: 0,
+      css: 0,
+      javascript: 0,
+      images: 0,
+      fonts: 0,
+      other: 0,
+    }
+
+    page.on('response', (response) => {
+      const status = response.status()
+      // Only count successful or cached resource resolutions (ignore breaks/redirects)
+      if (status >= 200 && status < 400) {
+        const headers = response.headers()
+        const contentLength = headers['content-length']
+
+        if (contentLength) {
+          const bytes = parseInt(contentLength, 10)
+          totalBytes += bytes
+
+          // Extract Puppeteer's resource categorization string
+          const resourceType = response.request().resourceType()
+
+          // Sort bytes into matching breakdown buckets
+          if (resourceType === 'document') {
+            breakdownBytes.html += bytes
+          } else if (resourceType === 'stylesheet') {
+            breakdownBytes.css += bytes
+          } else if (resourceType === 'script') {
+            breakdownBytes.javascript += bytes
+          } else if (resourceType === 'image' || resourceType === 'media') {
+            breakdownBytes.images += bytes
+          } else if (resourceType === 'font') {
+            breakdownBytes.fonts += bytes
+          } else {
+            breakdownBytes.other += bytes
+          }
+        }
+      }
+    })
+
     // 5. Navigate to the website and wait until network traffic quiets down
     await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 })
-    await browser.close()
 
     // 6. Calculate CO2 emissions using the 1byte model
     const co2Emission = new co2({ model: '1byte' })
@@ -117,7 +125,7 @@ export default defineEventHandler(async (event) => {
     return {
       url,
       co2Grams: parseFloat(finalCo2Grams.toFixed(4)),
-      breakdownBytes, // <-- This now feeds your Vue frontend computed property perfectly!
+      breakdownBytes, // Feeds your Vue frontend computed property perfectly!
       lighthouseFakeRun: 1,
     }
   } catch (error: any) {
@@ -125,9 +133,11 @@ export default defineEventHandler(async (event) => {
     console.error('====== SCAN ENDPOINT CRASHED ======')
     console.error(error)
     console.error('====================================')
-
-    // Ensure headless browser process is killed if navigation breaks down
-    await browser.close()
     throw createError({ statusCode: 500, statusMessage: error.message })
+  } finally {
+    // 8. Safely close the browser session whether execution succeeded or failed
+    if (browser) {
+      await browser.close()
+    }
   }
 })

@@ -97,9 +97,7 @@
     <div :class="{ invisible: saveSuccess }" class="min-w-[130px]">
       <AButton
         variant="green"
-        :label="
-          isSaving ? 'Saving...' : user ? 'Save Data' : 'Log in to Save History'
-        "
+        :label="isSaving ? 'Saving...' : user ? 'Save Data' : 'Register'"
         :disabled="isSaving"
         class="shrink-0 whitespace-nowrap"
         @click="handleSaveAction"

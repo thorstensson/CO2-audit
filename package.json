@@ -15,7 +15,7 @@
     "@iconify-vue/glyphs-poly": "^1.0.2",
     "@takumi-rs/core": "^1.1.2",
     "@tgwf/co2": "^0.18.0",
-    "puppeteer": "^24.43.1",
+    "puppeteer": "^25.0.4",
     "vue": "^3.5.33",
     "vue-router": "^5.0.6"
   },
