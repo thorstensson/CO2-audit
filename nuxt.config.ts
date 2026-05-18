@@ -39,6 +39,14 @@ export default defineNuxtConfig({
     '@nuxtjs/seo', // Moved to the end to intercept everything properly
   ],
 
+  routeRules: {
+      '/**': {
+        headers: {
+          'Content-Security-Policy': "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cloudflare.com; frame-src 'self' https://cloudflare.com;"
+        }
+      }
+    },
+
   runtimeConfig: {
     // Private backend keys
     turnstile: {
