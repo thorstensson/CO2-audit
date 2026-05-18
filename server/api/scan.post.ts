@@ -95,8 +95,8 @@ export default defineEventHandler(async (event) => {
       }
     })
 
-    // 5. Navigate to the website and wait until network traffic quiets down
-    await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 })
+    // 5. Navigate and wait for the page to load (more lenient on serverless)
+    await page.goto(url, { waitUntil: 'load', timeout: 60000 })
 
     // 6. Calculate CO2 emissions using the 1byte model
     const co2Emission = new co2({ model: '1byte' })
