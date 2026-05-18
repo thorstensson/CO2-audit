@@ -1,7 +1,9 @@
 <template>
-    <div class="min-h-screen bg-white text-black">
-        <div class="max-w-screen-2xl mx-auto px-6">
-            <slot />
-        </div>
+  <div class="bg-primary text-secondary min-h-screen">
+    <div class="mx-auto max-w-screen-2xl px-4 md:px-6">
+      <slot />
     </div>
+
+    <OFooter />
+  </div>
 </template>

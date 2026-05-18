@@ -3,18 +3,20 @@ withDefaults(
   defineProps<{
     value?: string | number;
     label: string;
+    valueClass?: string;
   }>(),
   {
     value: "—",
+    valueClass: "text-acc3",
   }
 );
 </script>
 
 <template>
-  <div class="text-center">
-    <p class="font-heading text-4xl font-bold text-black">{{ value }}</p>
+  <div class="text-center text-secondary">
+    <p class="font-heading text-4xl font-semibold" :class="valueClass">{{ value }}</p>
     <p
-      class="mt-2 text-sm text-gray-400 uppercase tracking-widest font-heading font-semibold"
+      class="text-sm uppercase tracking-widest font-heading font-semibold"
     >
       {{ label }}
     </p>

@@ -1,5 +1,5 @@
 {
-  "name": "carbonlog",
+  "name": "co2-audit",
   "type": "module",
   "private": true,
   "scripts": {
@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@fontsource-variable/instrument-sans": "^5.2.8",
+    "@fontsource-variable/outfit": "^5.2.8",
+    "@iconify-vue/glyphs-poly": "^1.0.2",
     "@takumi-rs/core": "^1.1.2",
     "@tgwf/co2": "^0.18.0",
     "puppeteer": "^24.43.1",

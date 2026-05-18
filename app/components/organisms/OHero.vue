@@ -1,24 +1,34 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+  withDefaults(
+    defineProps<{
+      heading: string
+      highlight: string
+      description: string
+      showSearch?: boolean
+    }>(),
+    {
+      showSearch: false,
+    }
+  )
+</script>
 
 <template>
   <!-- Hero section -->
-  <section class="pt-32 pb-8">
-    <div class="max-w-4xl mx-auto text-center">
+  <section class="pt-32">
+    <div class="mx-auto flex max-w-4xl flex-col gap-8 text-center">
       <h1
-        class="font-heading text-6xl md:text-7xl lg:text-8xl font-bold leading-tight tracking-tight text-black"
+        class="font-heading text-hero text-secondary leading-tight font-bold tracking-tight"
       >
-        Measure your<br />
-        <span class="text-gray-400">carbon footprint</span>
+        {{ heading }}<br />
+        <span class="text-acc2">{{ highlight }}</span>
       </h1>
       <p
-        class="mt-8 text-lg md:text-xl text-gray-500 max-w-2xl mx-auto leading-relaxed"
+        class="font-body text-body text-secondary mx-auto max-w-2xl leading-relaxed"
       >
-        Track, analyze, and reduce your CO₂ emissions with precision. Built for
-        developers who care about the planet.
+        {{ description }}
       </p>
-      <div class="mt-10 flex flex-col items-center gap-4">
-        <MSearchInput />
-      </div>
+
+      <MSearchInput v-if="showSearch" />
     </div>
   </section>
 </template>

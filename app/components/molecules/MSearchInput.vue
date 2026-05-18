@@ -5,7 +5,7 @@ const { targetUrl, isScanning, turnstileToken, runGuestScan } = useScanState()
 </script>
 
 <template>
-  <div class="w-full max-w-2xl mx-auto flex flex-col gap-4">
+  <div class="w-full max-w-2xl mx-auto flex flex-col gap-4 mt-4">
     <!-- Combined input and button layout to replace the confusing buttons -->
     <div class="flex flex-col sm:flex-row gap-3">
       <input
@@ -27,10 +27,10 @@ const { targetUrl, isScanning, turnstileToken, runGuestScan } = useScanState()
     </div>
 
     <!-- Official Nuxt Turnstile rendering node -->
-    <div class="flex justify-start">
+    <div class="flex justify-center">
       <NuxtTurnstile
         v-model="turnstileToken"
-        :options="{ theme: 'light' }"
+        :options="{ theme: 'light', appearance: 'interaction-only' }"
       />
     </div>
   </div>

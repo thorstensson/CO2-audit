@@ -1,58 +1,65 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+  import { ref } from 'vue'
 
-const supabase = useSupabaseClient()
-const email = ref('')
-const isLoading = ref(false)
-const linkSent = ref(false)
+  const supabase = useSupabaseClient()
+  const email = ref('')
+  const isLoading = ref(false)
+  const linkSent = ref(false)
 
-async function handleMagicLinkLogin() {
-  if (!email.value) return
-  isLoading.value = true
+  async function handleMagicLinkLogin() {
+    if (!email.value) return
+    isLoading.value = true
 
-  try {
-    const { error } = await supabase.auth.signInWithOtp({
-      email: email.value,
-      options: {
-        // Explicitly format with a trailing slash to satisfy Supabase URL matching rules
-        emailRedirectTo: `${window.location.origin}/`
-      }
-    })
+    try {
+      const { error } = await supabase.auth.signInWithOtp({
+        email: email.value,
+        options: {
+          // Explicitly format with a trailing slash to satisfy Supabase URL matching rules
+          emailRedirectTo: `${window.location.origin}/`,
+        },
+      })
 
-    if (error) throw error
-    linkSent.value = true
-  } catch (err: any) {
-    alert(`Authentication failed: ${err.message}`)
-  } finally {
-    isLoading.value = false
+      if (error) throw error
+      linkSent.value = true
+    } catch (err: any) {
+      alert(`Authentication failed: ${err.message}`)
+    } finally {
+      isLoading.value = false
+    }
   }
-}
 </script>
 
 <template>
-  <section class="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-12">
-    <div class="max-w-md w-full space-y-8 bg-white p-8 rounded-2xl border border-gray-100 shadow-sm">
-
+  <section class="flex min-h-screen items-center justify-center">
+    <div
+      class="bg-secondary flex w-full max-w-md flex-col gap-4 rounded-2xl border border-gray-100 p-8"
+    >
       <!-- Heading Title Header -->
       <div class="text-center">
-        <h2 class="text-3xl font-heading font-black text-gray-900 tracking-tight">
+        <h2 class="font-heading text-primary text-3xl font-bold tracking-tight">
           Save your progress
         </h2>
-        <p class="mt-2 text-sm text-gray-500">
-          Enter your email below to log in or sign up instantly. No passwords needed.
+        <p class="text-primary text-base">
+          Enter your email below to log in or sign up instantly. No passwords
+          needed.
         </p>
       </div>
 
       <!-- Success Notification View -->
-      <div v-if="linkSent" class="p-4 bg-green-50 border border-green-200 rounded-xl text-center">
+      <div
+        v-if="linkSent"
+        class="rounded-xl border border-green-200 bg-green-50 p-4 text-center"
+      >
         <p class="text-sm font-semibold text-green-900">Check your inbox!</p>
-        <p class="text-xs text-green-700 mt-1">
-          We sent a secure authentication Magic Link to <span class="font-bold">{{ email }}</span>.
+        <p class="mt-1 text-xs text-green-700">
+          We sent a secure authentication Magic Link to
+          <span class="font-bold">{{ email }}</span
+          >.
         </p>
       </div>
 
       <!-- Interactive Input Form View -->
-      <form v-else @submit.prevent="handleMagicLinkLogin" class="mt-8 space-y-4">
+      <div v-else class="!my-0 flex h-fit flex-col gap-4 self-start">
         <div>
           <label for="email-address" class="sr-only">Email address</label>
           <input
@@ -62,26 +69,33 @@ async function handleMagicLinkLogin() {
             required
             placeholder="developer@example.com"
             :disabled="isLoading"
-            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 disabled:bg-gray-100 text-sm"
+            class="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm focus:ring-2 focus:ring-green-500 focus:outline-none disabled:bg-gray-100"
+            @keydown.enter="handleMagicLinkLogin"
           />
         </div>
 
-        <button
-          type="submit"
+        <AButton
+          variant="accent"
+          :label="isLoading ? 'Sending Link...' : 'Send Magic Link'"
           :disabled="isLoading"
-          class="w-full py-3 px-4 bg-green-600 hover:bg-green-700 text-white font-semibold text-sm rounded-lg shadow-sm transition disabled:bg-gray-400"
-        >
-          {{ isLoading ? 'Sending Link...' : 'Send Magic Link' }}
-        </button>
-      </form>
+          @click="handleMagicLinkLogin"
+        />
+
+        <p class="text-primary text-center text-xs leading-relaxed">
+          By logging in, you agree to our use of essential session cookies to
+          keep you authenticated. See our footer for details.
+        </p>
+      </div>
 
       <!-- Cancel Route Return Anchor -->
-      <div class="text-center mt-4">
-        <NuxtLink to="/" class="text-xs text-gray-400 hover:text-gray-600 underline underline-offset-2">
+      <div class="text-center">
+        <NuxtLink
+          to="/"
+          class="text-primary hover:text-primary/80 text-xs underline underline-offset-2"
+        >
           Back to Homepage
         </NuxtLink>
       </div>
-
     </div>
   </section>
 </template>

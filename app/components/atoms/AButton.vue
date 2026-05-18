@@ -1,55 +1,66 @@
 <script setup lang="ts">
-withDefaults(
-  defineProps<{
-    variant?: "primary" | "secondary" | "green" | "outline";
-    label: string;
-    to?: string;
-    disabled?: boolean;
-  }>(),
-  {
-    variant: "primary",
-    disabled: false,
-  }
-);
+  import { computed } from 'vue'
 
-const emit = defineEmits<{
-  click: [];
-}>();
+  const props = withDefaults(
+    defineProps<{
+      variant?: 'green' | 'outline' | 'accent'
+      label: string
+      to?: string
+      disabled?: boolean
+    }>(),
+    {
+      variant: 'green',
+      disabled: false,
+    }
+  )
+
+  const emit = defineEmits<{
+    click: []
+  }>()
+
+  const variantStyles: Record<string, string> = {
+    // Ometrics
+    green:
+      'px-6 py-3 bg-acc2 text-secondary hover:bg-acc2/80 rounded-lg shadow-[inset_0_1px_2px_0_rgba(255,255,255,0.25)]',
+    // Ometrics Outline
+    outline:
+      'px-6 py-3 bg-primary border border-secondary/50 text-secondary-100 hover:bg-acc3/20 rounded-lg shadow-[inset_0_1px_2px_0_rgba(255,255,255,0.25)]',
+    // Login CTA — full-width bright button
+    accent:
+      'w-full px-6 py-3 bg-acc1 text-primary font-semibold hover:bg-acc1/80 rounded-lg shadow-[inset_0_1px_2px_0_rgba(255,255,255,0.25)]',
+  }
+
+  const classes = computed(() => {
+    const v = props.variant || 'primary'
+    return variantStyles[v] ?? variantStyles.primary
+  })
 </script>
 
 <template>
   <NuxtLink
-    v-if="to"
-    :to="to"
+    v-if="props.to"
+    :to="props.to"
     :class="[
-      'px-6 py-3 font-semibold rounded-lg transition text-center flex items-center justify-center',
-      variant === 'green'
-        ? 'bg-green-600 text-white hover:bg-green-700'
-        : variant === 'outline'
-          ? 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
-          : variant === 'secondary'
-            ? 'px-8 py-4 font-heading text-sm uppercase tracking-widest rounded-full border border-gray-200 text-black hover:border-gray-400'
-            : 'px-8 py-4 font-heading text-sm uppercase tracking-widest rounded-full bg-black text-white hover:bg-gray-800',
+      'flex cursor-pointer items-center justify-center text-center transition-all duration-150',
+      classes,
     ]"
   >
-    {{ label }}
+    {{ props.label }}
   </NuxtLink>
 
   <button
     v-else
-    :disabled="disabled"
+    :disabled="props.disabled"
     :class="[
-      'font-semibold rounded-lg transition',
-      variant === 'green'
-        ? 'px-6 py-3 bg-green-600 text-white hover:bg-green-700 disabled:bg-gray-400'
-        : variant === 'outline'
-          ? 'px-6 py-3 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
-          : variant === 'secondary'
-            ? 'px-8 py-4 font-heading text-sm uppercase tracking-widest rounded-full border border-gray-200 text-black hover:border-gray-400'
-            : 'px-8 py-4 font-heading text-sm uppercase tracking-widest rounded-full bg-black text-white hover:bg-gray-800 disabled:bg-gray-400',
+      classes,
+      'cursor-pointer transition-all duration-150',
+      {
+        'disabled:bg-gray-400':
+          props.variant === 'green' || props.variant === 'accent',
+      },
     ]"
     @click="emit('click')"
   >
-    {{ label }}
+    {{ props.label }}
   </button>
 </template>

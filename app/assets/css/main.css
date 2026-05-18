@@ -3,30 +3,66 @@
 @theme {
     /* Font families */
     --font-heading: "Aspekta", sans-serif;
-    --font-body: "Instrument Sans", sans-serif;
+    --font-body: "Outfit Variable", sans-serif;
 
-    /* Toned black & white palette */
-    --color-white: #fafafa;
-    --color-black: #1a1a1a;
-    --color-gray-50: #f5f5f5;
-    --color-gray-100: #e8e8e8;
-    --color-gray-200: #d4d4d4;
-    --color-gray-300: #b0b0b0;
-    --color-gray-400: #8c8c8c;
-    --color-gray-500: #6b6b6b;
-    --color-gray-600: #525252;
-    --color-gray-700: #3d3d3d;
-    --color-gray-800: #2a2a2a;
-    --color-gray-900: #1a1a1a;
+    /* Fluid type scale */
+    --text-caption: clamp(0.75rem, 0.6875rem + 0.2vw, 0.875rem);
+    --text-body: clamp(1rem, 0.9375rem + 0.2vw, 1.125rem);
+    --text-h3: clamp(1rem, 0.625rem + 0.6vw, 1.25rem);
+    --text-h2: clamp(1.125rem, 0.6875rem + 0.8vw, 1.5rem);
+    --text-h1: clamp(1.5rem, 0.875rem + 1.25vw, 2.125rem);
+    --text-hero: clamp(2.5rem, 1rem + 4vw, 6rem);
+
+    /* Core palette */
+    --color-primary: #211A1E;
+    --color-primary-100: #3C2D33;
+    --color-primary-200: #635157;
+    --color-primary-300: #928387;
+    --color-primary-400: #BBB4B7;
+
+    --color-secondary: #F5EDF0;
+    --color-secondary-100: #DDD5D8;
+    --color-secondary-200: #B8B2B4;
+    --color-secondary-300: #7B7778;
+    --color-secondary-400: #3D3B3C;
+
+    /* Eco accent */
+    --color-acc1: #9AE19D;
+    /* celadon green */
+    --color-acc2: #537A5A;
+    /* fern green */
+    --color-acc3: #EACBD7;
 }
 
 body {
-    /* This is standard CSS using your v4 variables */
     font-family: var(--font-body);
-    background-color: var(--color-white);
-    color: var(--color-black);
+    background-color: var(--color-primary);
+    color: var(--color-secondary);
 
-    /* Optional: Improves font rendering on most browsers */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scrollbar — dark theme, minimal */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-primary-200) var(--color-primary);
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--color-primary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--color-primary-200);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--color-primary-300);
 }

@@ -1,29 +1,34 @@
 <script setup lang="ts">
-// Core Supabase authentication state abstraction hooks
-const user = useSupabaseUser()
-const supabase = useSupabaseClient()
+  // Core Supabase authentication state abstraction hooks
+  const user = useSupabaseUser()
+  const supabase = useSupabaseClient()
 
-// Layout modifier prop to cleanly adapt typography styling rules for mobile vs desktop viewports
-defineProps<{
-  mode: 'desktop' | 'mobile'
-}>()
+  // Layout modifier prop to cleanly adapt typography styling rules for mobile vs desktop viewports
+  defineProps<{
+    mode: 'desktop' | 'mobile'
+  }>()
 
-async function handleLogout() {
-  await supabase.auth.signOut()
-  navigateTo('/')
-}
+  async function handleLogout() {
+    await supabase.auth.signOut()
+    navigateTo('/')
+  }
 </script>
 
 <template>
   <!-- Desktop Layout Architecture Variant -->
-  <div v-if="mode === 'desktop'" class="flex items-center gap-4 border-l border-gray-200 pl-8">
+  <div
+    v-if="mode === 'desktop'"
+    class="flex items-center gap-4 border-l border-gray-200 pl-8"
+  >
     <template v-if="user">
-      <span class="text-xs font-mono font-semibold text-gray-500 bg-gray-50 px-2 py-1 rounded max-w-[150px] truncate">
+      <span
+        class="text-primary max-w-[150px] truncate rounded bg-green-50 px-2 py-1 font-mono text-xs font-semibold"
+      >
         {{ user.email }}
       </span>
       <button
         @click="handleLogout"
-        class="font-heading text-xs font-bold tracking-widest text-rose-600 hover:text-rose-400 transition-colors duration-300"
+        class="font-heading text-acc3 text-xs font-bold transition-colors duration-300 hover:text-rose-400"
       >
         LOGOUT
       </button>
@@ -31,7 +36,7 @@ async function handleLogout() {
     <template v-else>
       <NuxtLink
         to="/login"
-        class="font-heading text-sm font-semibold tracking-widest text-green-600 hover:text-green-700 transition-colors duration-300"
+        class="font-heading text-acc1 hover:text-acc1/80 text-sm font-semibold tracking-widest transition-colors duration-300"
       >
         LOGIN
       </NuxtLink>
@@ -39,14 +44,19 @@ async function handleLogout() {
   </div>
 
   <!-- Mobile Slide-In Overlay Layout Architecture Variant -->
-  <div v-else class="border-t border-gray-100 pt-8 flex flex-col gap-6 items-end">
+  <div
+    v-else
+    class="flex flex-col items-end gap-6 border-t border-gray-100 pt-8"
+  >
     <template v-if="user">
-      <span class="text-xs font-mono font-semibold text-gray-400 max-w-[220px] truncate">
+      <span
+        class="max-w-[220px] truncate font-mono text-xs font-semibold text-gray-400"
+      >
         Signed in as {{ user.email }}
       </span>
       <button
         @click="handleLogout"
-        class="font-heading text-2xl font-semibold tracking-widest text-rose-600 hover:text-rose-400 transition-colors duration-300"
+        class="font-heading text-2xl font-semibold tracking-widest text-rose-600 transition-colors duration-300 hover:text-rose-400"
       >
         LOGOUT
       </button>
@@ -54,7 +64,7 @@ async function handleLogout() {
     <template v-else>
       <NuxtLink
         to="/login"
-        class="font-heading text-2xl font-semibold tracking-widest text-green-600 hover:text-green-700 transition-colors duration-300"
+        class="font-heading text-2xl font-semibold tracking-widest text-green-600 transition-colors duration-300 hover:text-green-700"
       >
         LOGIN
       </NuxtLink>

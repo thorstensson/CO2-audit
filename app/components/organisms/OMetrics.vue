@@ -1,17 +1,52 @@
 <script setup lang="ts">
-import { useScanState } from '@/composables/useScanState'
+  import { computed } from 'vue'
+  import { useScanState } from '@/composables/useScanState'
+  import { useBaseline } from '@/composables/useBaseline'
 
-// 1. Pull the reactive states from your composable
-const { co2Tracked, lighthouseRuns, co2Saved } = useScanState()
+  const { selectedScan, isScanning } = useScanState()
+  const { calculateSaved } = useBaseline()
+
+  const displayCo2 = computed(() =>
+    selectedScan.value ? `${selectedScan.value.co2Grams}g` : '—'
+  )
+
+  const displaySaved = computed(() =>
+    selectedScan.value ? calculateSaved(selectedScan.value.co2Grams) : '—'
+  )
+
+  const savedClass = computed(() =>
+    String(displaySaved.value).startsWith('-') ? 'text-rose-300' : 'text-acc2'
+  )
 </script>
 
 <template>
-  <section class="py-20 bg-gray-50 relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen">
-    <div class="mx-auto max-w-screen-2xl px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
-      <!-- 2. Use the :value syntax to pass the reactive state down -->
-      <AMetric :value="co2Tracked" label="CO₂ tracked" />
-      <AMetric :value="lighthouseRuns" label="Lighthouse runs" />
-      <AMetric :value="co2Saved" label="CO₂ saved" />
+  <section class="relative py-16">
+    <div class="mx-auto max-w-screen-2xl px-6">
+      <!-- Site heading — shown when a scan result is available -->
+      <div
+        :class="['mb-6 text-center', selectedScan ? 'visible' : 'invisible']"
+      >
+        <p class="font-heading text-h2 text-acc2 font-semibold">
+          Carbon Report:
+        </p>
+        <p class="font-heading mt-1 inline-block max-w-full truncate text-sm">
+          {{ selectedScan?.url }}
+        </p>
+      </div>
+
+      <ALoadingDots v-if="isScanning" />
+
+      <div
+        v-else
+        class="flex flex-col justify-center gap-x-64 gap-y-8 md:flex-row"
+      >
+        <AMetric :value="displayCo2" label="CO₂ tracked" />
+        <AMetric
+          :value="displaySaved"
+          label="CO₂ saved"
+          :valueClass="savedClass"
+        />
+      </div>
     </div>
   </section>
 </template>
