@@ -28,6 +28,10 @@ export default defineNuxtConfig({
     zeroRuntime: true,
   },
 
+  turnstile: {
+    siteKey: '', // Set via NUXT_PUBLIC_TURNSTILE_SITE_KEY at runtime
+  },
+
   modules: [
     '@nuxt/eslint',
     '@nuxtjs/turnstile',
