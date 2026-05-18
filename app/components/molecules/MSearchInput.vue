@@ -16,19 +16,23 @@
 </script>
 
 <template>
-  <form
-    @submit.prevent="runGuestScan"
-    class="mx-auto mt-4 flex w-full max-w-2xl flex-col gap-4"
-  >
+  <div class="mx-auto mt-4 flex w-full max-w-2xl flex-col gap-4">
     <div class="flex flex-col gap-3 sm:flex-row">
       <input
         v-model="targetUrl"
-        type="url"
+        type="text"
         placeholder="Type website URL (e.g., https://my-site.com)"
         :disabled="isScanning"
         class="flex-1 rounded-lg border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-green-500 focus:outline-none disabled:bg-gray-100"
       />
 
+      <AButton variant="outline" label="Learn More" to="/how" />
+    </div>
+
+    <form
+      @submit.prevent="runGuestScan"
+      class="flex flex-col items-center gap-4"
+    >
       <AButton
         variant="green"
         :label="isScanning ? 'Analyzing...' : 'Get Started'"
@@ -36,15 +40,11 @@
         type="submit"
       />
 
-      <AButton variant="outline" label="Learn More" to="/how" />
-    </div>
-
-    <div class="flex justify-center">
       <NuxtTurnstile
         ref="turnstile"
         v-model="turnstileToken"
         :options="{ theme: 'light', appearance: 'interaction-only' }"
       />
-    </div>
-  </form>
+    </form>
+  </div>
 </template>
