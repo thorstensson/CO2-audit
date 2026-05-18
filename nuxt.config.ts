@@ -53,29 +53,8 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
-    // Private backend keys
     turnstile: {
-      secretKey: '',
-    },
-    // Public frontend keys
-    public: {
-      turnstile: {
-        siteKey: '',
-      },
-    },
-  },
-
-  // FIX: Properly closed development-only override block
-  $development: {
-    runtimeConfig: {
-      turnstile: {
-        secretKey: '1x00000000000000000000000000000000',
-      },
-      public: {
-        turnstile: {
-          siteKey: '1x00000000000000000000AA',
-        },
-      },
+      secretKey: '', // NUXT_TURNSTILE_SECRET_KEY
     },
   },
 
