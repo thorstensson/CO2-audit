@@ -42,9 +42,8 @@ export default defineNuxtConfig({
   routeRules: {
     '/**': {
       headers: {
-        // FIX: Added 'challenges.' directly before cloudflare.com
         'Content-Security-Policy':
-          "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com; frame-src 'self' https://challenges.cloudflare.com;",
+          "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com; frame-src 'self' https://challenges.cloudflare.com; trusted-types 'self' cloudflare-challenge 'allow-duplicates'; require-trusted-types-for 'script';",
       },
     },
   },
