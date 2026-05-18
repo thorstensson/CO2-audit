@@ -16,8 +16,10 @@
 </script>
 
 <template>
-  <div class="mx-auto mt-4 flex w-full max-w-2xl flex-col gap-4">
-    <!-- Combined input and button layout to replace the confusing buttons -->
+  <form
+    @submit.prevent="runGuestScan"
+    class="mx-auto mt-4 flex w-full max-w-2xl flex-col gap-4"
+  >
     <div class="flex flex-col gap-3 sm:flex-row">
       <input
         v-model="targetUrl"
@@ -31,13 +33,12 @@
         variant="green"
         :label="isScanning ? 'Analyzing...' : 'Get Started'"
         :disabled="isScanning || !turnstileToken"
-        @click="runGuestScan"
+        type="submit"
       />
 
       <AButton variant="outline" label="Learn More" to="/how" />
     </div>
 
-    <!-- Official Nuxt Turnstile rendering node -->
     <div class="flex justify-center">
       <NuxtTurnstile
         ref="turnstile"
@@ -45,5 +46,5 @@
         :options="{ theme: 'light', appearance: 'interaction-only' }"
       />
     </div>
-  </div>
+  </form>
 </template>
