@@ -42,7 +42,7 @@
       <NuxtTurnstile
         ref="turnstile"
         v-model="turnstileToken"
-        :options="{ theme: 'light', appearance: 'execute' }"
+        :options="{ theme: 'light', appearance: 'interaction-only' }"
       />
     </div>
   </div>
