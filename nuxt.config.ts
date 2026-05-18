@@ -43,7 +43,7 @@ export default defineNuxtConfig({
     '/**': {
       headers: {
         'Content-Security-Policy':
-          "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cloudflare.com; frame-src 'self' https://cloudflare.com;",
+          "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; frame-src 'self' https://challenges.cloudflare.com; connect-src 'self' https://challenges.cloudflare.com;",
       },
     },
   },
