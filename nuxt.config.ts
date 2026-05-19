@@ -8,7 +8,18 @@ export default defineNuxtConfig({
 
   compatibilityDate: '2024-04-03',
 
-  devtools: { enabled: true },
+  devtools: { enabled: false },
+
+  site: {
+    url: 'https://co2audit.app',
+    name: 'CO2 Audit',
+    description: 'Measure the carbon footprint of any website.',
+    defaultLocale: 'en',
+  },
+
+  ogImage: {
+    zeroRuntime: true,
+  },
 
   vite: {
     plugins: [tailwindcss() as any],
@@ -17,24 +28,34 @@ export default defineNuxtConfig({
     },
   },
 
-  vue: {
-    compilerOptions: {
-      // This tells Vue to suppress the experimental warning natively
-      isCustomElement: (tag) => tag === 'suspense',
+  nitro: {
+    routeRules: {
+      '/**': {
+        headers: {
+          'Content-Security-Policy': [
+            "default-src 'self'",
+            "script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://*.challenges.cloudflare.com",
+            'frame-src https://challenges.cloudflare.com https://*.challenges.cloudflare.com',
+            "connect-src 'self' https://challenges.cloudflare.com https://*.challenges.cloudflare.com",
+            "img-src 'self' data: https:",
+            "style-src 'self' 'unsafe-inline'",
+            "worker-src 'self' blob: https://challenges.cloudflare.com",
+            'child-src https://challenges.cloudflare.com',
+          ].join('; '),
+        },
+      },
     },
   },
 
-  ogImage: {
-    zeroRuntime: true,
-  },
-
-  turnstile: {
-    siteKey: '', // Set via NUXT_PUBLIC_TURNSTILE_SITE_KEY at runtime
+  vue: {
+    compilerOptions: {
+      // Combined into a single, unified arrow function with no duplicate keys
+      isCustomElement: (tag) => tag === 'suspense' || tag === 'altcha-widget',
+    },
   },
 
   modules: [
     '@nuxt/eslint',
-    '@nuxtjs/turnstile',
     '@nuxt/icon',
     '@nuxt/fonts',
     '@nuxt/image',
@@ -43,20 +64,9 @@ export default defineNuxtConfig({
     '@nuxtjs/seo',
   ],
 
-  routeRules: {
-    '/**': {
-      headers: {
-        'Content-Security-Policy':
-          "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; frame-src 'self' https://challenges.cloudflare.com; connect-src 'self' https://challenges.cloudflare.com; worker-src 'self' blob: https://challenges.cloudflare.com; img-src 'self' data: https://challenges.cloudflare.com;",
-      },
-    },
-  },
-
   runtimeConfig: {
-    turnstile: {
-      secretKey: '', // NUXT_TURNSTILE_SECRET_KEY
-    },
-    maintenanceMode: true, // Set via NUXT_MAINTENANCE_MODE env var
+    maintenanceMode: false,
+    altchaHmacKey: process.env.ALTCHA_HMAC_SECRET,
   },
 
   components: [
@@ -67,7 +77,7 @@ export default defineNuxtConfig({
   ],
 
   svgo: {
-    autoImportPath: '~/assets/svg/', // Fixed path alias for Nuxt 4
+    autoImportPath: '~/assets/svg/',
     defaultImport: 'component',
   },
 
@@ -93,9 +103,9 @@ export default defineNuxtConfig({
         style: 'normal',
       }, // <-- This bracket was missing in my previous edit
       {
-        name: 'Outfit',
+        name: 'Be Vietnam Pro',
         provider: 'fontsource',
-        weights: ['400 900'],
+        weights: ['400', '600'],
       },
     ],
   },

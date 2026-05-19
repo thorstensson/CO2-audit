@@ -1,5 +1,8 @@
 <script setup lang="ts">
-  import { ref } from 'vue'
+  import { ref, watch } from 'vue'
+
+  // Persists across component remounts within the same session
+  let dismissed = false
 
   // Nuxt Supabase core hooks
   const client = useSupabaseClient()
@@ -10,6 +13,20 @@
 
   const isSaving = ref(false)
   const saveSuccess = ref(false)
+
+  // Auto-dismiss after 15s, never show again
+  watch(showSavePrompt, (val) => {
+    if (val) {
+      if (dismissed) {
+        showSavePrompt.value = false
+        return
+      }
+      dismissed = true
+      setTimeout(() => {
+        showSavePrompt.value = false
+      }, 15000)
+    }
+  })
 
   async function handleSaveAction() {
     if (!lastScanData.value) return
@@ -55,18 +72,16 @@
 </script>
 
 <template>
-  <!-- Fixed toast prompt that appears after a scan completes -->
   <div
     v-if="showSavePrompt"
-    class="fixed right-8 bottom-8 z-50 flex max-w-md min-w-[340px] flex-col gap-3 rounded-xl border bg-white p-4 shadow-lg transition-all duration-300 sm:flex-row sm:items-center"
+    class="fixed right-8 bottom-8 z-50 flex max-w-md min-w-[340px] flex-col gap-3 rounded-xl border p-4 shadow-lg backdrop-blur-md transition-all duration-300 sm:flex-row sm:items-center"
     :class="
       saveSuccess
-        ? 'border-blue-200 bg-blue-50'
-        : 'border-green-200 bg-green-50'
+        ? 'border-blue-200 bg-blue-50/60'
+        : 'border-green-200 bg-green-50/20'
     "
   >
     <div class="grid grid-cols-1 text-center sm:text-left">
-      <!-- Both states share the same grid cell; the taller one determines height -->
       <div
         :class="saveSuccess ? 'visible' : 'invisible'"
         class="col-start-1 row-start-1"
@@ -94,7 +109,10 @@
       </div>
     </div>
 
-    <div :class="{ invisible: saveSuccess }" class="min-w-[130px]">
+    <div
+      :class="{ invisible: saveSuccess }"
+      class="min-w-[130px] self-center sm:self-auto"
+    >
       <AButton
         variant="green"
         :label="isSaving ? 'Saving...' : user ? 'Save Data' : 'Register'"

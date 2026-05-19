@@ -7,6 +7,7 @@
       label: string
       to?: string
       disabled?: boolean
+      type?: 'button' | 'submit' | 'reset'
     }>(),
     {
       variant: 'green',
@@ -31,8 +32,7 @@
   }
 
   const classes = computed(() => {
-    const v = props.variant || 'primary'
-    return variantStyles[v] ?? variantStyles.primary
+    return variantStyles[props.variant ?? 'green'] ?? variantStyles.green
   })
 </script>
 
@@ -50,6 +50,7 @@
 
   <button
     v-else
+    :type="props.type ?? 'button'"
     :disabled="props.disabled"
     :class="[
       classes,

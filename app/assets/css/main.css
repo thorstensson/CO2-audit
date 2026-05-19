@@ -2,8 +2,8 @@
 
 @theme {
     /* Font families */
-    --font-heading: "Aspekta", sans-serif;
-    --font-body: "Outfit Variable", sans-serif;
+    --font-heading: 'Aspekta', sans-serif;
+    --font-body: 'Be Vietnam Pro', sans-serif;
 
     /* Fluid type scale */
     --text-caption: clamp(0.75rem, 0.6875rem + 0.2vw, 0.875rem);

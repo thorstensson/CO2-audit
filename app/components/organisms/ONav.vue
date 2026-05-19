@@ -102,6 +102,7 @@
           <NuxtLink
             v-else-if="item === 'HOW'"
             to="/how"
+            b
             :class="activeRoute === '/how' ? 'text-acc1' : 'text-secondary'"
             class="hover:text-secondary/80 transition-colors duration-300"
             @click="isOpen = false"
@@ -113,7 +114,7 @@
       </ul>
 
       <!-- 2. PLUGGED IN MOBILE MOLECULE HERE -->
-      <div class="mt-10">
+      <div class="mt-10 pr-4">
         <MAuthControl mode="mobile" @click="isOpen = false" />
       </div>
     </div>

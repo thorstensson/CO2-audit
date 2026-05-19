@@ -1,8 +1,10 @@
+import { verifySolution } from 'altcha-lib'
+import { deriveKey } from 'altcha-lib/algorithms/pbkdf2'
 import puppeteer from 'puppeteer'
 import { co2 } from '@tgwf/co2'
 
 export default defineEventHandler(async (event) => {
-  // 1. Get the URL and Turnstile verification token from the client payload
+  // 1. Get the URL and verification token from the client payload
   const body = await readBody(event)
   const { token } = body
   let url = body.url
@@ -11,7 +13,6 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'URL is required' })
   }
 
-  // Instantly block direct API script requests that skip the frontend widget
   if (!token) {
     throw createError({
       statusCode: 400,
@@ -19,33 +20,61 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  // URL Normalizer: Automatically prepends https:// if the guest omitted it
+  // URL Normalizer
   if (!/^https?:\/\//i.test(url)) {
     url = `https://${url}`
   }
 
-  // 2. Validate the token with Cloudflare using Nuxt's official module helper
-  const verification = await verifyTurnstileToken(token)
-  if (!verification.success) {
+  // 2. Validate the token using local ALTCHA cryptography
+  console.log('Verifying ALTCHA puzzle payload...')
+  const config = useRuntimeConfig()
+
+  let isHuman = false
+
+  try {
+    const decodedText = Buffer.from(token, 'base64').toString('utf-8')
+    const parsedPayload = JSON.parse(decodedText)
+
+    const result = await verifySolution({
+      challenge: parsedPayload.challenge,
+      solution: parsedPayload.solution,
+      deriveKey: deriveKey,
+      hmacSignatureSecret: config.altchaHmacKey || '',
+    })
+
+    isHuman = result.verified
+  } catch (payloadError: any) {
+    console.error(
+      'Failed to parse or decode incoming token:',
+      payloadError.message
+    )
+  }
+
+  if (!isHuman) {
+    console.error('ALTCHA security verification failed')
     throw createError({
       statusCode: 403,
       statusMessage: 'Verification failed. Bots are not allowed.',
     })
   }
+  console.log('ALTCHA verification successful!')
 
-  // 3. Smart Browser Connection: Use Browserless in production, local Chrome in development
+  // 3. Smart Browser Connection
   const isProd = process.env.NODE_ENV === 'production'
   let browser
 
   try {
+    console.log(`Environment: ${isProd ? 'PRODUCTION' : 'DEVELOPMENT'}`)
+
     if (isProd) {
+      const browserlessEndpoint = `wss://chrome.browserless.io?token=${process.env.BROWSERLESS_TOKEN}`
       browser = await puppeteer.connect({
-        browserWSEndpoint: `wss://chrome.browserless.io?token=${process.env.BROWSERLESS_TOKEN}`,
+        browserWSEndpoint: browserlessEndpoint,
       })
     } else {
       browser = await puppeteer.launch({
         headless: true,
-        channel: 'chrome', // Forces Puppeteer to launch your local system's Google Chrome
+        channel: 'chrome',
         args: ['--no-sandbox', '--disable-setuid-sandbox'],
       })
     }
@@ -65,38 +94,55 @@ export default defineEventHandler(async (event) => {
 
     page.on('response', (response) => {
       const status = response.status()
-      // Only count successful or cached resource resolutions (ignore breaks/redirects)
       if (status >= 200 && status < 400) {
         const headers = response.headers()
         const contentLength = headers['content-length']
+        const resourceType = response.request().resourceType()
 
+        let bytes = 0
         if (contentLength) {
-          const bytes = parseInt(contentLength, 10)
-          totalBytes += bytes
+          bytes = parseInt(contentLength, 10)
+        }
 
-          // Extract Puppeteer's resource categorization string
-          const resourceType = response.request().resourceType()
+        totalBytes += bytes
 
-          // Sort bytes into matching breakdown buckets
-          if (resourceType === 'document') {
-            breakdownBytes.html += bytes
-          } else if (resourceType === 'stylesheet') {
-            breakdownBytes.css += bytes
-          } else if (resourceType === 'script') {
-            breakdownBytes.javascript += bytes
-          } else if (resourceType === 'image' || resourceType === 'media') {
-            breakdownBytes.images += bytes
-          } else if (resourceType === 'font') {
-            breakdownBytes.fonts += bytes
-          } else {
-            breakdownBytes.other += bytes
-          }
+        // Sort bytes into matching breakdown buckets
+        if (resourceType === 'document') {
+          breakdownBytes.html += bytes
+        } else if (resourceType === 'stylesheet') {
+          breakdownBytes.css += bytes
+        } else if (resourceType === 'script') {
+          breakdownBytes.javascript += bytes
+        } else if (resourceType === 'image' || resourceType === 'media') {
+          breakdownBytes.images += bytes
+        } else if (resourceType === 'font') {
+          breakdownBytes.fonts += bytes
+        } else {
+          breakdownBytes.other += bytes
         }
       }
     })
 
-    // 5. Navigate and wait for the page to load (more lenient on serverless)
-    await page.goto(url, { waitUntil: 'load', timeout: 60000 })
+    // 5. Navigate and wait for the page to load
+    console.log('Navigating to:', url)
+    const mainResponse = await page.goto(url, {
+      waitUntil: 'load',
+      timeout: 60000,
+    })
+    console.log('Page loaded successfully')
+
+    // FALLBACK: If HTML is still 0 because of chunked transfer headers, read the text buffer size
+    if (breakdownBytes.html === 0 && mainResponse) {
+      try {
+        const htmlContent = await mainResponse.text()
+        const fallbackHtmlBytes = Buffer.byteLength(htmlContent, 'utf8')
+
+        breakdownBytes.html = fallbackHtmlBytes
+        totalBytes += fallbackHtmlBytes
+      } catch (e) {
+        console.warn('Fallback HTML reading skipped')
+      }
+    }
 
     // 6. Calculate CO2 emissions using the 1byte model
     const co2Emission = new co2({ model: '1byte' })
@@ -104,7 +150,6 @@ export default defineEventHandler(async (event) => {
 
     let finalCo2Grams = 0
 
-    // Explicitly handle whether co2.js returned an object or a primitive number
     if (
       co2GramsResult &&
       typeof co2GramsResult === 'object' &&
@@ -121,21 +166,20 @@ export default defineEventHandler(async (event) => {
           : (co2GramsResult as number) || 0
     }
 
-    // 7. Return raw values safely to the guest user along with the new breakdown tracking
+    // 7. Return values
     return {
       url,
       co2Grams: parseFloat(finalCo2Grams.toFixed(4)),
-      breakdownBytes, // Feeds your Vue frontend computed property perfectly!
+      breakdownBytes,
       lighthouseFakeRun: 1,
     }
   } catch (error: any) {
-    // Crucial: This prints the exact descriptive stack trace to your terminal!
     console.error('====== SCAN ENDPOINT CRASHED ======')
     console.error(error)
     console.error('====================================')
     throw createError({ statusCode: 500, statusMessage: error.message })
   } finally {
-    // 8. Safely close the browser session whether execution succeeded or failed
+    // 8. Safely close browser session
     if (browser) {
       await browser.close()
     }

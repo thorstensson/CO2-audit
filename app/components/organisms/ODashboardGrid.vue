@@ -121,7 +121,6 @@
 
 <template>
   <div class="mx-auto max-w-screen-2xl px-6 py-12">
-    <!-- Empty State View -->
     <div
       v-if="!selectedScan && !isScanning"
       class="bg-primary rounded-2xl border-2 border-dashed border-gray-200 py-16 text-center"
@@ -140,7 +139,6 @@
       </p>
     </div>
 
-    <!-- Processing State Loader -->
     <div
       v-else-if="isScanning"
       class="bg-primary rounded-2xl border border-gray-100 py-20 text-center shadow-sm"
@@ -153,9 +151,7 @@
       </p>
     </div>
 
-    <!-- Active Analytics Grid Workspace -->
     <div v-else class="grid grid-cols-1 gap-8 lg:grid-cols-3">
-      <!-- Column A: Detailed Structural Breakdown Table (Spans 2 columns) -->
       <div
         class="bg-primary overflow-hidden rounded-2xl border border-gray-100 shadow-sm lg:col-span-2"
       >
@@ -198,7 +194,6 @@
         </div>
       </div>
 
-      <!-- Column B: Environmental Impact Card Context -->
       <div class="space-y-6">
         <!-- Grade/Rating Segment -->
         <div
@@ -225,7 +220,6 @@
           </div>
         </div>
 
-        <!-- Practical Equivalents Gauge -->
         <div
           class="bg-primary rounded-2xl border border-gray-100 p-6 shadow-sm"
         >
