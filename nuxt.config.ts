@@ -40,7 +40,7 @@ export default defineNuxtConfig({
     '@nuxt/image',
     'nuxt-svgo',
     '@nuxtjs/supabase',
-    '@nuxtjs/seo', // Moved to the end to intercept everything properly
+    '@nuxtjs/seo',
   ],
 
   routeRules: {
@@ -56,6 +56,7 @@ export default defineNuxtConfig({
     turnstile: {
       secretKey: '', // NUXT_TURNSTILE_SECRET_KEY
     },
+    maintenanceMode: true, // Set via NUXT_MAINTENANCE_MODE env var
   },
 
   components: [
@@ -109,7 +110,7 @@ export default defineNuxtConfig({
     redirectOptions: {
       login: '/login',
       callback: '/confirm',
-      exclude: ['/', '/why', '/how', '/login', '/api/scan'],
+      exclude: ['/', '/why', '/how', '/login', '/maintenance', '/api/scan'],
     },
   },
 })
