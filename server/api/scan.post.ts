@@ -77,59 +77,73 @@ export default defineEventHandler(async (event) => {
 
     const page = await browser.newPage()
 
-    const breakdownBytes = {
-      html: 0,
-      css: 0,
-      javascript: 0,
-      images: 0,
-      fonts: 0,
-      other: 0,
-    }
-    let totalBytes = 0
-
-    // Collect all asynchronous processing tasks securely
-    const processingPromises: Promise<void>[] = []
-
-    page.on('response', (response) => {
-      const status = response.status()
-      if (status >= 200 && status < 400) {
-        const resourceType = response.request().resourceType()
-
-        // Push the async work execution block into the array
-        const work = response
-          .buffer()
-          .then((buf) => {
-            if (buf && buf.length > 0) {
-              const bytes = buf.length
-              totalBytes += bytes
-              if (resourceType === 'document') breakdownBytes.html += bytes
-              else if (resourceType === 'stylesheet')
-                breakdownBytes.css += bytes
-              else if (resourceType === 'script')
-                breakdownBytes.javascript += bytes
-              else if (resourceType === 'image' || resourceType === 'media')
-                breakdownBytes.images += bytes
-              else if (resourceType === 'font') breakdownBytes.fonts += bytes
-              else breakdownBytes.other += bytes
-            }
-          })
-          .catch(() => {
-            // safely ignore analytic/tracking pixels or tracking drops
-          })
-
-        processingPromises.push(work)
-      }
-    })
-
     console.log('Navigating to:', url)
     await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 })
     console.log('Page loaded successfully')
 
-    // Allow Browserless WebSocket to flush trailing async stream requests
+    // Allow any trailing async scripts or deferred items to settle inside the DOM
     await new Promise((resolve) => setTimeout(resolve, 3000))
 
-    // CRUCIAL: Force the main execution thread to wait until every background buffer has completely tabulated
-    await Promise.all(processingPromises)
+    // Extract precise uncompressed body sizes directly from Chrome's performance memory
+    const performanceMetrics = await page.evaluate(() => {
+      const resources = performance.getEntriesByType('resource')
+
+      const breakdown = {
+        html: 0,
+        css: 0,
+        javascript: 0,
+        images: 0,
+        fonts: 0,
+        other: 0,
+      }
+      let total = 0
+
+      resources.forEach((resource: any) => {
+        // decodedBodySize provides the pure uncompressed raw content byte count
+        const bytes = resource.decodedBodySize || 0
+        const name = (resource.name || '').toLowerCase()
+
+        // Use initiatorType fallback to determine categories accurately
+        const initiator = resource.initiatorType
+
+        total += bytes
+
+        if (initiator === 'css' || name.endsWith('.css')) {
+          breakdown.css += bytes
+        } else if (initiator === 'script' || name.endsWith('.js')) {
+          breakdown.javascript += bytes
+        } else if (
+          ['img', 'image', 'video'].includes(initiator) ||
+          /\.(png|jpe?g|gif|webp|svg|mp4|webm)/.test(name)
+        ) {
+          breakdown.images += bytes
+        } else if (
+          initiator === 'css' &&
+          (name.includes('.woff') ||
+            name.includes('.ttf') ||
+            name.includes('.otf'))
+        ) {
+          breakdown.fonts += bytes
+        } else if (initiator === 'xmlhttprequest' || initiator === 'fetch') {
+          breakdown.other += bytes
+        } else {
+          breakdown.other += bytes
+        }
+      })
+
+      // Crucial: Capture the uncompressed root HTML navigation entry weight itself
+      const navEntries = performance.getEntriesByType('navigation')
+      if (navEntries && navEntries.length > 0) {
+        const rootHtmlBytes = (navEntries[0] as any).decodedBodySize || 0
+        breakdown.html += rootHtmlBytes
+        total += rootHtmlBytes
+      }
+
+      return { total, breakdown }
+    })
+
+    const totalBytes = performanceMetrics.total
+    const breakdownBytes = performanceMetrics.breakdown
 
     const co2Emission = new co2({ model: '1byte' })
     const co2GramsResult = co2Emission.perByte(totalBytes)
