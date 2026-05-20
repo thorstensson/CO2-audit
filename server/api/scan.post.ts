@@ -77,30 +77,7 @@ export default defineEventHandler(async (event) => {
 
     const page = await browser.newPage()
 
-    // Collect buffer promises for accurate byte measurement
-    const bufferEntries: Promise<{ bytes: number; type: string }>[] = []
-
-    page.on('response', (response) => {
-      const status = response.status()
-      if (status >= 200 && status < 400) {
-        const resourceType = response.request().resourceType()
-        bufferEntries.push(
-          response
-            .buffer()
-            .then((buf) => ({ bytes: buf.length, type: resourceType }))
-            .catch(() => ({ bytes: 0, type: resourceType }))
-        )
-      }
-    })
-
-    console.log('Navigating to:', url)
-    await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 })
-    console.log('Page loaded successfully')
-
-    // Allow Browserless WebSocket to flush all buffer promises
-    await new Promise((resolve) => setTimeout(resolve, 3000))
-
-    // Tally all buffered responses
+    // Accumulated in real time as buffers resolve
     const breakdownBytes = {
       html: 0,
       css: 0,
@@ -111,17 +88,36 @@ export default defineEventHandler(async (event) => {
     }
     let totalBytes = 0
 
-    const results = await Promise.all(bufferEntries)
-    for (const { bytes, type } of results) {
-      totalBytes += bytes
-      if (type === 'document') breakdownBytes.html += bytes
-      else if (type === 'stylesheet') breakdownBytes.css += bytes
-      else if (type === 'script') breakdownBytes.javascript += bytes
-      else if (type === 'image' || type === 'media')
-        breakdownBytes.images += bytes
-      else if (type === 'font') breakdownBytes.fonts += bytes
-      else breakdownBytes.other += bytes
-    }
+    page.on('response', async (response) => {
+      const status = response.status()
+      if (status >= 200 && status < 400) {
+        const resourceType = response.request().resourceType()
+        try {
+          const buf = await response.buffer()
+          if (buf && buf.length > 0) {
+            const bytes = buf.length
+            totalBytes += bytes
+            if (resourceType === 'document') breakdownBytes.html += bytes
+            else if (resourceType === 'stylesheet') breakdownBytes.css += bytes
+            else if (resourceType === 'script')
+              breakdownBytes.javascript += bytes
+            else if (resourceType === 'image' || resourceType === 'media')
+              breakdownBytes.images += bytes
+            else if (resourceType === 'font') breakdownBytes.fonts += bytes
+            else breakdownBytes.other += bytes
+          }
+        } catch {
+          // ignore tracking pixels or aborted streams
+        }
+      }
+    })
+
+    console.log('Navigating to:', url)
+    await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 })
+    console.log('Page loaded successfully')
+
+    // Allow Browserless WebSocket to flush trailing async events
+    await new Promise((resolve) => setTimeout(resolve, 3000))
 
     const co2Emission = new co2({ model: '1byte' })
     const co2GramsResult = co2Emission.perByte(totalBytes)
