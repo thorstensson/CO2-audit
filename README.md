@@ -12,7 +12,7 @@ Carbonlog helps developers measure and track the carbon footprint of their sites
 
 ## What it does
 
-Carbonlog runs Lighthouse audits via Puppeteer, extracts performance metrics, and calculates estimated CO₂ emissions per page visit using the [Sustainable Web Design (SWD)](https://www.thegreenwebfoundation.org/) model.
+Carbonlog runs Lighthouse audits via Puppeteer, extracts performance metrics, and calculates estimated CO₂ emissions per page visit using the [Sustainable Web Design (SWD)](https://www.thegreenwebfoundation.org/) model. Goose.
 
 ## Status
 
