@@ -123,7 +123,15 @@ export default defineEventHandler(async (event) => {
 
     console.log('Navigating to:', url)
     await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 })
-    console.log('Page loaded successfully')
+    console.log(
+      'Primary DOM Loaded. Holding window open for WebGL texture streaming...'
+    )
+
+    // FORCE A 3-SECOND ASYNC WAIT TO CAPTURE FETCH/XHR ASSETS:
+    await new Promise((resolve) => setTimeout(resolve, 3000))
+    console.log(
+      `Pipeline Sync Complete. Captured true WebGL compressed wire bytes: ${totalBytes}`
+    )
 
     // ========================================================================
     // CRITICAL FIX: Enhanced Asynchronous CDP Event Settle Delay
