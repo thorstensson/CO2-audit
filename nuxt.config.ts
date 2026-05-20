@@ -65,7 +65,7 @@ export default defineNuxtConfig({
   ],
 
   runtimeConfig: {
-    maintenanceMode: true,
+    maintenanceMode: false,
     altchaHmacKey: process.env.ALTCHA_HMAC_SECRET,
   },
 
