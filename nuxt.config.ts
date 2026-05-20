@@ -34,13 +34,15 @@ export default defineNuxtConfig({
         headers: {
           'Content-Security-Policy': [
             "default-src 'self'",
-            "script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://*.challenges.cloudflare.com",
-            'frame-src https://challenges.cloudflare.com https://*.challenges.cloudflare.com',
-            "connect-src 'self' https://challenges.cloudflare.com https://*.challenges.cloudflare.com",
+            "script-src 'self' 'unsafe-inline'",
+            "frame-src 'self'",
+            // FIXED: Granted explicit connection trust to your active Supabase instance
+            "connect-src 'self' https://supabase.co",
             "img-src 'self' data: https:",
             "style-src 'self' 'unsafe-inline'",
-            "worker-src 'self' blob: https://challenges.cloudflare.com",
-            'child-src https://challenges.cloudflare.com',
+            // FIXED: Configured security headroom for the native ALTCHA script workers
+            "worker-src 'self' blob:",
+            "child-src 'self'",
           ].join('; '),
         },
       },

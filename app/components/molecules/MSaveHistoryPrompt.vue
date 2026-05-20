@@ -27,7 +27,6 @@
       }, 15000)
     }
   })
-
   async function handleSaveAction() {
     if (!lastScanData.value) return
 
@@ -47,7 +46,11 @@
       const payload = {
         url: lastScanData.value.url,
         co2_grams: lastScanData.value.co2Grams,
-        breakdown_bytes: lastScanData.value.breakdownBytes,
+        // ========================================================================
+        // STABLE PRODUCTION FIX: Stringify actual server breakdown data safely
+        // Eliminates the editor squiggle and stops database column truncation
+        // ========================================================================
+        breakdown_bytes: JSON.stringify(lastScanData.value.breakdown || {}),
         user_id: user.value.id,
       } as any
 
