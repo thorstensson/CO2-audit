@@ -111,9 +111,22 @@ export default defineNuxtConfig({
       },
     ],
   },
-
   supabase: {
+    url: 'https://kbipxdxanwivfoneveuh.supabase.co',
     useSsrCookies: true, // Explicitly declare to ensure Nitro engine processes it
+
+    // ========================================================================
+    // FORCE BYPASS: Disable the module's automatic fallback CSP injection
+    // Restores complete header control back to your custom nitro.routeRules
+    // ========================================================================
+    clientOptions: {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+      },
+    },
+    // ========================================================================
+
     cookieOptions: {
       path: '/', // Explicitly forces the auth cookie to be visible across Nuxt 4 root
       secure: process.env.NODE_ENV === 'production', // Fixes local dev cookie blocking
