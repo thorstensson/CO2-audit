@@ -122,7 +122,7 @@ export default defineEventHandler(async (event) => {
     })
 
     console.log('Navigating to:', url)
-    await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 })
+    await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 })
     console.log('Page loaded successfully')
 
     // ========================================================================
