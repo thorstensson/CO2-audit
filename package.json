@@ -9,6 +9,16 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
   },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "puppeteer",
+      "esbuild",
+      "sharp",
+      "@parcel/watcher",
+      "vue-demi",
+      "unrs-resolver"
+    ]
+  },
   "dependencies": {
     "@fontsource-variable/instrument-sans": "^5.2.8",
     "@fontsource-variable/outfit": "^5.2.8",
