@@ -65,7 +65,7 @@ export default defineEventHandler(async (event) => {
     console.log(`Environment: ${isProd ? 'PRODUCTION' : 'DEVELOPMENT'}`)
 
     if (isProd) {
-      const browserlessEndpoint = `wss://chrome.browserless.io?token=${process.env.BROWSERLESS_TOKEN}`
+      const browserlessEndpoint = `wss://chrome.browserless.io?token=${process.env.BROWSERLESS_TOKEN}&--use-gl=angle&--use-angle=gl`
       browser = await puppeteer.connect({
         browserWSEndpoint: browserlessEndpoint,
       })
@@ -79,8 +79,17 @@ export default defineEventHandler(async (event) => {
     }
 
     const page = await browser.newPage()
-
     console.log('await browser.newPage')
+
+    // ========================================================================
+    // PRODUCTION FOOTPRINT: Mask Headless Signatures
+    // Bypasses corporate cloud-infrastructure firewalls that block raw Browserless IPs
+    // ========================================================================
+    await page.setUserAgent(
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+    )
+    await page.setViewport({ width: 1440, height: 900 })
+    // ========================================================================
 
     // Setup initial data buckets
     const breakdownBytes = {
@@ -118,6 +127,9 @@ export default defineEventHandler(async (event) => {
       else if (type === 'image' || type === 'media')
         breakdownBytes.images += wireBytes
       else if (type === 'font') breakdownBytes.fonts += wireBytes
+      // Catches all 3D assets, textures, and mesh coordinate data requested by Three.js
+      else if (type === 'fetch' || type === 'xhr')
+        breakdownBytes.other += wireBytes
       else breakdownBytes.other += wireBytes
     })
 
@@ -234,13 +246,11 @@ export default defineEventHandler(async (event) => {
   } catch (error: any) {
     console.error('====== SCAN ENDPOINT CRASHED ======')
     console.error(error)
-    console.error('====================================')
     throw createError({ statusCode: 500, statusMessage: error.message })
   } finally {
     // Clear references out of memory explicitly
     requestTypes.clear()
 
-    // Safely detach the CDP link before closing browser to ensure Vercel exits cleanly
     if (cdpSession) {
       try {
         await cdpSession.detach()
