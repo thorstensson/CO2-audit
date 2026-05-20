@@ -140,6 +140,13 @@ export default defineEventHandler(async (event) => {
           : (co2GramsResult as number) || 0
     }
 
+    console.log(
+      'Scan result — totalBytes:',
+      totalBytes,
+      'breakdown:',
+      JSON.stringify(breakdownBytes)
+    )
+
     return {
       url,
       co2Grams: parseFloat(finalCo2Grams.toFixed(4)),

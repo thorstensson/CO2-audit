@@ -4,15 +4,15 @@
   import CarSideIcon from '@iconify-vue/glyphs-poly/car-side'
   import AnalyticsIcon from '@iconify-vue/glyphs-poly/analytics'
 
-  // FIXED: Reference the state engine directly without destructuring to maintain global reactivity links
-  const scanState = useScanState()
-
-  // Scan data now holds a breakdown of bytes per type (image, script, styles, other)
-  const selectedScan = computed(() => scanState.selectedScan.value)
-  const isScanning = computed(() => scanState.isScanning.value)
-  const scanHistory = computed(() => scanState.scanHistory.value)
-  const selectedIndex = computed(() => scanState.selectedIndex.value)
-  const { goToPrev, goToNext } = scanState
+  // FIXED: Destructure directly to avoid stale computed snapshots
+  const {
+    selectedScan,
+    isScanning,
+    scanHistory,
+    selectedIndex,
+    goToPrev,
+    goToNext,
+  } = useScanState()
 
   /**
    * Computes asset footprint breakdown using live Puppeteer node data.
@@ -151,7 +151,14 @@
       </p>
     </div>
 
-    <div v-else class="grid grid-cols-1 gap-8 lg:grid-cols-3">
+    <div
+      v-else-if="
+        selectedScan &&
+        selectedScan.breakdownBytes &&
+        selectedScan.co2Grams !== undefined
+      "
+      class="grid grid-cols-1 gap-8 lg:grid-cols-3"
+    >
       <div
         class="bg-primary overflow-hidden rounded-2xl border border-gray-100 shadow-sm lg:col-span-2"
       >
