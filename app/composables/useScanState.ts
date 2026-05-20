@@ -1,30 +1,41 @@
 import { computed } from 'vue'
 import { useState } from '#app'
 
-// 1. Define explicit TypeScript interfaces for strict type safety
-interface BreakdownBytes {
-  html: number
-  css: number
-  javascript: number
-  images: number
-  fonts: number
-  other: number
+// ========================================================================
+// 1. UPDATED SCHEMAS: Match the pre-formatted UI strings from the server
+// ========================================================================
+interface AssetMetric {
+  size: string
+  share: string
+}
+
+interface ScanBreakdown {
+  html: AssetMetric
+  css: AssetMetric
+  javascript: AssetMetric
+  images: AssetMetric
+  fonts: AssetMetric
+  other: AssetMetric
 }
 
 interface ScanDataPayload {
   url: string
   co2Grams: number
-  breakdownBytes: BreakdownBytes // <-- Added tracking mapping schema
+  sustainabilityIndex: string // <-- Captured from server payload
+  breakdown: ScanBreakdown // <-- Captured from server payload
   lighthouseFakeRun: number
 }
 
 interface SavedScanState {
   url: string
   co2Grams: number
-  breakdownBytes: BreakdownBytes // <-- Added to the state persistence definition
+  sustainabilityIndex: string // <-- Maintained in global state tracking
+  breakdown: ScanBreakdown // <-- Maintained in global state tracking
 }
 
-// 2. FIXED: True outside instantiation guarantees a single shared global memory state registry pool
+// ========================================================================
+// 2. SHARED GLOBAL MEMORY STATES
+// ========================================================================
 const targetUrlShared = () => useState<string>('scan_target_url', () => '')
 const isScanningShared = () =>
   useState<boolean>('scan_is_scanning', () => false)
@@ -32,15 +43,11 @@ const turnstileTokenShared = () =>
   useState<string>('scan_turnstile_token', () => '')
 const showSavePromptShared = () =>
   useState<boolean>('show_save_prompt', () => false)
-
-// Update the type signature here to allow the new breakdown object structure
 const lastScanDataShared = () =>
   useState<SavedScanState | null>('last_scan_data', () => null)
-
 const scanHistoryShared = () =>
   useState<SavedScanState[]>('scan_history', () => [])
 const selectedIndexShared = () => useState<number>('selected_index', () => 0)
-
 const co2TrackedShared = () =>
   useState<string | number>('co2_tracked', () => '—')
 const lighthouseRunsShared = () =>
@@ -48,21 +55,17 @@ const lighthouseRunsShared = () =>
 const co2SavedShared = () => useState<string | number>('co2_saved', () => '—')
 
 export const useScanState = () => {
-  // Bind directly to the single shared memory instances
   const targetUrl = targetUrlShared()
   const isScanning = isScanningShared()
   const turnstileToken = turnstileTokenShared()
   const showSavePrompt = showSavePromptShared()
   const lastScanData = lastScanDataShared()
-
   const scanHistory = scanHistoryShared()
   const selectedIndex = selectedIndexShared()
-
   const co2Tracked = co2TrackedShared()
   const lighthouseRuns = lighthouseRunsShared()
   const co2Saved = co2SavedShared()
 
-  // The currently selected scan from history
   const selectedScan = computed(() => {
     if (scanHistory.value.length > 0) {
       return scanHistory.value[selectedIndex.value] ?? null
@@ -102,10 +105,14 @@ export const useScanState = () => {
       const { calculateSaved } = useBaseline()
       co2Saved.value = calculateSaved(data.co2Grams)
 
+      // ========================================================================
+      // FIXED MAPPING: Directly map the server response payload properties
+      // ========================================================================
       const scan: SavedScanState = {
         url: data.url,
         co2Grams: data.co2Grams,
-        breakdownBytes: data.breakdownBytes,
+        sustainabilityIndex: data.sustainabilityIndex,
+        breakdown: data.breakdown,
       }
 
       lastScanData.value = scan

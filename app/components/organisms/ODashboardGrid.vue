@@ -1,10 +1,7 @@
 <script setup lang="ts">
   import { computed } from 'vue'
-  import TreeIcon from '@iconify-vue/glyphs-poly/tree'
-  import CarSideIcon from '@iconify-vue/glyphs-poly/car-side'
-  import AnalyticsIcon from '@iconify-vue/glyphs-poly/analytics'
 
-  // FIXED: Destructure directly to avoid stale computed snapshots
+  // Fetch your global scan state array handlers natively
   const {
     selectedScan,
     isScanning,
@@ -15,102 +12,133 @@
   } = useScanState()
 
   /**
+   * Safe computed proxy pointer.
+   * Forces the component to evaluate the modern API payload shape dynamically
+   * without choking on stale global interface definitions.
+   */
+  const scan = computed(() => selectedScan.value as any)
+
+  /**
+   * REACTIVE HYDRATION GATE
+   * Replaces the manual onMounted ref approach. Returns false during the Vercel pre-render
+   * phase (SSR) to keep server HTML lightweight, then automatically switches on the client
+   * once reactive data models successfully hydrate.
+   */
+  const showDashboard = computed(() => {
+    if (import.meta.env.SSR) return false
+    return !!(scan.value && scan.value.co2Grams !== undefined)
+  })
+
+  /**
    * Computes asset footprint breakdown using live Puppeteer node data.
-   * Scales the true tracked resource type sizes against the total page footprint.
-   *
-   * @see {@link https://thegreenwebfoundation.org} CO2.js Integration Guides
-   * @returns {Array|null} The real calculated asset allocations for the data visualization.
+   * Maps pre-formatted backend text metrics directly to the layout presentation segments.
+   * Uses defensive fallbacks to prevent runtime DOM tracking breakage if breakdown is null.
    */
   const footprintBreakdown = computed(() => {
-    if (!selectedScan.value || !selectedScan.value.breakdownBytes) return null
+    if (!scan.value) return null
 
-    const totalCo2 = selectedScan.value.co2Grams
-    const bytes = selectedScan.value.breakdownBytes
-    const totalBytes =
-      bytes.html +
-      bytes.css +
-      bytes.javascript +
-      bytes.images +
-      bytes.fonts +
-      bytes.other
-
-    if (totalBytes === 0) return null
-
-    // Helper mapping function to calculate individual metrics cleanly
-    const createSegment = (name: string, assetBytes: number, color: string) => {
-      const percentage = (assetBytes / totalBytes) * 100
-      const assetCo2 = totalCo2 * (assetBytes / totalBytes)
-      return {
-        name,
-        weight: `${percentage.toFixed(0)}%`,
-        amount: `${assetCo2.toFixed(3)}g`,
-        color,
-      }
+    // Fallback block prevents type errors if server fails to send the breakdown object
+    const breakdown = scan.value.breakdown || {
+      html: { share: '0%', size: '0 KB' },
+      css: { share: '0%', size: '0 KB' },
+      javascript: { share: '0%', size: '0 KB' },
+      images: { share: '0%', size: '0 KB' },
+      fonts: { share: '0%', size: '0 KB' },
+      other: { share: '0%', size: '0 KB' },
     }
 
     return [
-      createSegment('HTML', bytes.html, 'bg-emerald-500/60'),
-      createSegment('CSS', bytes.css, 'bg-teal-500/60'),
-      createSegment('JavaScript', bytes.javascript, 'bg-cyan-500/60'),
-      createSegment('Images', bytes.images, 'bg-violet-500/60'),
-      createSegment('Fonts', bytes.fonts, 'bg-amber-500/60'),
-      createSegment('Other', bytes.other, 'bg-rose-500/60'),
+      {
+        name: 'HTML',
+        weight: breakdown.html?.share || '0%',
+        amount: breakdown.html?.size || '0 KB',
+        color: 'bg-emerald-500/60',
+      },
+      {
+        name: 'CSS',
+        weight: breakdown.css?.share || '0%',
+        amount: breakdown.css?.size || '0 KB',
+        color: 'bg-teal-500/60',
+      },
+      {
+        name: 'JavaScript',
+        weight: breakdown.javascript?.share || '0%',
+        amount: breakdown.javascript?.size || '0 KB',
+        color: 'bg-cyan-500/60',
+      },
+      {
+        name: 'Images',
+        weight: breakdown.images?.share || '0%',
+        amount: breakdown.images?.size || '0 KB',
+        color: 'bg-violet-500/60',
+      },
+      {
+        name: 'Fonts',
+        weight: breakdown.fonts?.share || '0%',
+        amount: breakdown.fonts?.size || '0 KB',
+        color: 'bg-amber-500/60',
+      },
+      {
+        name: 'Other',
+        weight: breakdown.other?.share || '0%',
+        amount: breakdown.other?.size || '0 KB',
+        color: 'bg-rose-500/60',
+      },
     ]
   })
 
   /**
    * Compares the scanned website carbon emissions against typical web standards.
-   * Maps the co2Grams score directly to the open-source Digital Carbon Rating system.
-   *
-   * @see {@link https://sustainablewebdesign.org} Official SWD Grading System
-   * @see {@link https://wholegraindigital.com} Rating Scale Announcement
-   * @returns {Object|null} The grading scheme including letters, labels, and Tailwind styles.
+   * Maps the backend sustainabilityIndex directly to matching UI text variants and Tailwind styles.
    */
   const ratingScale = computed(() => {
-    if (!selectedScan.value) return null
-    const score = selectedScan.value.co2Grams
+    // Graceful fallback card styling if the grade property is absent
+    if (!scan.value || !scan.value.sustainabilityIndex) {
+      return {
+        grade: '—',
+        label: 'No Rating Available',
+        style: 'text-gray-500 bg-gray-50 border-gray-200',
+      }
+    }
+    const grade = scan.value.sustainabilityIndex
 
-    // A+ represents the top 5% most efficient sites globally (< 0.2g CO2)
-    if (score < 0.2)
+    if (grade === 'A+') {
       return {
         grade: 'A+',
-        label: 'Eco-Friendly',
+        label: 'Eco-Friendly / Extremely Light',
         style: 'text-emerald-600 bg-emerald-50 border-emerald-200',
       }
-
-    // B represents optimized, high-performing websites (< 0.5g CO2)
-    if (score < 0.5)
+    }
+    if (grade === 'A') {
+      return {
+        grade: 'A',
+        label: 'Excellent',
+        style: 'text-emerald-500 bg-emerald-50/50 border-emerald-100',
+      }
+    }
+    if (grade === 'B') {
       return {
         grade: 'B',
-        label: 'Good',
+        label: 'Good / Well Optimized',
         style: 'text-green-600 bg-green-50 border-green-200',
       }
-
-    // C falls below the global average page weight median (< 1.0g CO2)
-    if (score < 1.0)
+    }
+    if (grade === 'C') {
       return {
         grade: 'C',
         label: 'Moderate Impact',
         style: 'text-yellow-600 bg-yellow-50 border-yellow-200',
       }
-
-    // D approaches the unoptimized average boundary (< 1.5g CO2)
-    if (score < 1.5)
+    }
+    if (grade === 'D') {
       return {
         grade: 'D',
         label: 'High Impact',
         style: 'text-orange-600 bg-orange-50 border-orange-200',
       }
+    }
 
-    // E is the final tier cleaner than the global baseline median (< 2.0g CO2)
-    if (score < 2.0)
-      return {
-        grade: 'E',
-        label: 'Very High Impact',
-        style: 'text-red-500 bg-red-50 border-red-200',
-      }
-
-    // F triggers automatically when the website exceeds global average emissions (>= 2.0g CO2)
+    // Default Fallback to F
     return {
       grade: 'F',
       label: 'Heavy Carbon Load',
@@ -121,8 +149,43 @@
 
 <template>
   <div class="mx-auto max-w-screen-2xl px-6 py-12">
+    <!-- ========================================================== -->
+    <!-- ISOLATED JSON DIAGNOSTIC TRACE BLOCK                       -->
+    <!-- Displays state output safely to find layout discrepancies -->
+    <!-- ========================================================== -->
     <div
-      v-if="!selectedScan && !isScanning"
+      class="mb-6 rounded-xl border border-amber-200 bg-amber-50/40 p-4 font-mono text-xs text-amber-900"
+    >
+      <p class="mb-2 font-bold tracking-wider text-amber-800 uppercase">
+        🔍 Composable Reactive State Diagnostics
+      </p>
+      <div>
+        <span class="font-bold">showDashboard (Computed):</span>
+        {{ showDashboard }}
+      </div>
+      <div><span class="font-bold">isScanning:</span> {{ isScanning }}</div>
+      <div>
+        <span class="font-bold">scanHistory Length:</span>
+        {{ scanHistory?.length || 0 }}
+      </div>
+      <div>
+        <span class="font-bold">selectedIndex:</span> {{ selectedIndex }}
+      </div>
+      <div class="mt-3">
+        <span class="font-bold text-emerald-800">Raw selectedScan Object:</span>
+        <pre
+          v-if="selectedScan"
+          class="mt-1 max-h-60 overflow-auto rounded border border-gray-200 bg-white p-3 text-gray-800 shadow-inner"
+          >{{ JSON.stringify(selectedScan, null, 2) }}</pre
+        >
+        <span v-else class="ml-1 text-gray-500 italic">null / undefined</span>
+      </div>
+    </div>
+    <!-- ========================================================== -->
+
+    <!-- State view if there are no loaded runs -->
+    <div
+      v-if="!scan && !isScanning"
       class="bg-primary rounded-2xl border-2 border-dashed border-gray-200 py-16 text-center"
     >
       <div
@@ -139,6 +202,7 @@
       </p>
     </div>
 
+    <!-- Active Loading Template State -->
     <div
       v-else-if="isScanning"
       class="bg-primary rounded-2xl border border-gray-100 py-20 text-center shadow-sm"
@@ -151,12 +215,9 @@
       </p>
     </div>
 
+    <!-- Visual Dashboard (Gated safely by the single showDashboard computed condition) -->
     <div
-      v-else-if="
-        selectedScan &&
-        selectedScan.breakdownBytes &&
-        selectedScan.co2Grams !== undefined
-      "
+      v-else-if="showDashboard"
       class="grid grid-cols-1 gap-8 lg:grid-cols-3"
     >
       <div
@@ -168,9 +229,9 @@
           <div>
             <h3 class="text-h3 text-acc2 font-bold">Carbon Asset Breakdown</h3>
             <p class="text-base">
-              Estimated distribution of transfer weights for
+              Distribution of wire transfer weights for
               <span class="rounded bg-green-50 px-1 font-mono text-green-700">{{
-                selectedScan?.url
+                scan?.url
               }}</span>
             </p>
           </div>
@@ -193,9 +254,9 @@
               class="flex w-full items-center justify-between gap-4 pl-5 sm:w-auto sm:justify-end sm:pl-0"
             >
               <span class="font-mono text-base">{{ item.weight }}</span>
-              <span class="font-mono text-base font-semibold"
-                >-{{ item.amount }}</span
-              >
+              <span class="font-mono text-base font-semibold">{{
+                item.amount
+              }}</span>
             </div>
           </div>
         </div>
@@ -220,13 +281,16 @@
               <div>
                 <p class="text-base font-bold">{{ ratingScale?.label }}</p>
                 <p class="text-base">
-                  Based on CO₂ grams generated per viewing.
+                  Produces
+                  <span class="font-semibold">{{ scan?.co2Grams }}g</span> CO₂
+                  per view.
                 </p>
               </div>
             </div>
           </div>
         </div>
 
+        <!-- Real-World Equivalents -->
         <div
           class="bg-primary rounded-2xl border border-gray-100 p-6 shadow-sm"
         >
@@ -236,62 +300,25 @@
           </p>
 
           <div class="text-primary mt-4 space-y-3 text-sm">
-            <div class="flex items-center gap-3 rounded-xl bg-green-50 p-2">
-              <CarSideIcon height="4em" />
-              <div>
-                <p class="font-mono font-semibold">
-                  {{
-                    (
-                      (selectedScan ? selectedScan.co2Grams * 10000 : 0) / 120
-                    ).toFixed(1)
-                  }}
-                  km
-                </p>
-                <p>Driven in a fossil-fueled car.</p>
-              </div>
+            <div class="flex items-center gap-3">
+              <span class="text-xl">🌳</span>
+              <p class="text-base">
+                Requires
+                <span class="font-semibold">{{
+                  scan?.co2Grams
+                    ? ((Number(scan.co2Grams) * 120000) / 22000).toFixed(1)
+                    : '0.0'
+                }}</span>
+                trees to absorb those yearly emissions.
+              </p>
             </div>
-
-            <div class="flex items-center gap-3 rounded-xl bg-green-50 p-2">
-              <TreeIcon height="4em" />
-              <div>
-                <p class="font-mono font-semibold">
-                  {{
-                    (
-                      (selectedScan ? selectedScan.co2Grams * 10000 : 0) / 2200
-                    ).toFixed(2)
-                  }}
-                  weeks
-                </p>
-                <p>Time for a mature tree to absorb this amount.</p>
-              </div>
+            <div class="flex items-center gap-3">
+              <span class="text-xl">🚗</span>
+              <p class="text-base">Equivalent to driving a standard car.</p>
             </div>
           </div>
         </div>
       </div>
-    </div>
-
-    <!-- Pagination controls -->
-    <div
-      v-if="scanHistory.length > 1"
-      class="p-y-20 mt-16 flex items-center justify-center gap-4"
-    >
-      <button
-        :disabled="selectedIndex <= 0"
-        class="font-heading text-secondary/60 hover:text-secondary text-h3 cursor-pointer font-semibold tracking-widest transition disabled:opacity-30"
-        @click="goToPrev"
-      >
-        ← Prev
-      </button>
-      <span class="text-secondary/40 text-h3 font-mono"
-        >{{ selectedIndex + 1 }} / {{ scanHistory.length }}</span
-      >
-      <button
-        :disabled="selectedIndex >= scanHistory.length - 1"
-        class="font-heading text-secondary/60 hover:text-secondary text-h3 cursor-pointer font-semibold tracking-widest transition disabled:opacity-30"
-        @click="goToNext"
-      >
-        Next →
-      </button>
     </div>
   </div>
 </template>

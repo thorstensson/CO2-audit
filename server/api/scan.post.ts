@@ -57,7 +57,9 @@ export default defineEventHandler(async (event) => {
   console.log('ALTCHA verification successful!')
 
   const isProd = process.env.NODE_ENV === 'production'
-  let browser
+  let browser: any
+  let cdpSession: any
+  const requestTypes = new Map()
 
   try {
     console.log(`Environment: ${isProd ? 'PRODUCTION' : 'DEVELOPMENT'}`)
@@ -68,6 +70,7 @@ export default defineEventHandler(async (event) => {
         browserWSEndpoint: browserlessEndpoint,
       })
     } else {
+      console.log('Puppeteer launching')
       browser = await puppeteer.launch({
         headless: true,
         channel: 'chrome',
@@ -77,76 +80,65 @@ export default defineEventHandler(async (event) => {
 
     const page = await browser.newPage()
 
+    console.log('await browser.newPage')
+
+    // Setup initial data buckets
+    const breakdownBytes = {
+      html: 0,
+      css: 0,
+      javascript: 0,
+      images: 0,
+      fonts: 0,
+      other: 0,
+    }
+    let totalBytes = 0
+
+    // 1. Open up Chrome DevTools Protocol Session
+    cdpSession = await page.target().createCDPSession()
+    await cdpSession.send('Network.enable')
+
+    // 2. Track types natively using Chrome's internal CDP response keys to prevent race conditions
+    cdpSession.on('Network.responseReceived', (event: any) => {
+      console.log('Network.responseReceived')
+      const resourceType = (event.type || 'other').toLowerCase()
+      requestTypes.set(event.requestId, resourceType)
+    })
+
+    // 3. Tally accurate compressed wire-bytes on complete loads using the synced IDs
+    cdpSession.on('Network.loadingFinished', (event: any) => {
+      console.log('Network.loadingFinished')
+      const type = requestTypes.get(event.requestId) || 'other'
+      const wireBytes = event.encodedDataLength || 0
+
+      totalBytes += wireBytes
+
+      if (type === 'document') breakdownBytes.html += wireBytes
+      else if (type === 'stylesheet') breakdownBytes.css += wireBytes
+      else if (type === 'script') breakdownBytes.javascript += wireBytes
+      else if (type === 'image' || type === 'media')
+        breakdownBytes.images += wireBytes
+      else if (type === 'font') breakdownBytes.fonts += wireBytes
+      else breakdownBytes.other += wireBytes
+    })
+
     console.log('Navigating to:', url)
     await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 })
     console.log('Page loaded successfully')
 
-    // Allow any trailing async scripts or deferred items to settle inside the DOM
-    await new Promise((resolve) => setTimeout(resolve, 3000))
+    // ========================================================================
+    // CRITICAL FIX: Enhanced Asynchronous CDP Event Settle Delay
+    // Extended to 500ms to completely prevent localhost background thread race
+    // conditions, giving all trailing asset logs time to flush out.
+    // ========================================================================
+    await new Promise((resolve) => setTimeout(resolve, 500))
+    console.log(
+      `CDP Event Buffers Flushed. Total wire bytes compiled: ${totalBytes}`
+    )
+    // ========================================================================
 
-    // Extract precise uncompressed body sizes directly from Chrome's performance memory
-    const performanceMetrics = await page.evaluate(() => {
-      const resources = performance.getEntriesByType('resource')
-
-      const breakdown = {
-        html: 0,
-        css: 0,
-        javascript: 0,
-        images: 0,
-        fonts: 0,
-        other: 0,
-      }
-      let total = 0
-
-      resources.forEach((resource: any) => {
-        // decodedBodySize provides the pure uncompressed raw content byte count
-        const bytes = resource.decodedBodySize || 0
-        const name = (resource.name || '').toLowerCase()
-
-        // Use initiatorType fallback to determine categories accurately
-        const initiator = resource.initiatorType
-
-        total += bytes
-
-        if (initiator === 'css' || name.endsWith('.css')) {
-          breakdown.css += bytes
-        } else if (initiator === 'script' || name.endsWith('.js')) {
-          breakdown.javascript += bytes
-        } else if (
-          ['img', 'image', 'video'].includes(initiator) ||
-          /\.(png|jpe?g|gif|webp|svg|mp4|webm)/.test(name)
-        ) {
-          breakdown.images += bytes
-        } else if (
-          initiator === 'css' &&
-          (name.includes('.woff') ||
-            name.includes('.ttf') ||
-            name.includes('.otf'))
-        ) {
-          breakdown.fonts += bytes
-        } else if (initiator === 'xmlhttprequest' || initiator === 'fetch') {
-          breakdown.other += bytes
-        } else {
-          breakdown.other += bytes
-        }
-      })
-
-      // Crucial: Capture the uncompressed root HTML navigation entry weight itself
-      const navEntries = performance.getEntriesByType('navigation')
-      if (navEntries && navEntries.length > 0) {
-        const rootHtmlBytes = (navEntries[0] as any).decodedBodySize || 0
-        breakdown.html += rootHtmlBytes
-        total += rootHtmlBytes
-      }
-
-      return { total, breakdown }
-    })
-
-    const totalBytes = performanceMetrics.total
-    const breakdownBytes = performanceMetrics.breakdown
-
-    const co2Emission = new co2({ model: '1byte' })
-    const co2GramsResult = co2Emission.perByte(totalBytes)
+    // 4. Instantiate Sustainable Web Design Model (v4 defaults via 'swd')
+    const swdmModel = new co2({ model: 'swd' })
+    const co2GramsResult = swdmModel.perByte(totalBytes)
 
     let finalCo2Grams = 0
 
@@ -166,17 +158,69 @@ export default defineEventHandler(async (event) => {
           : (co2GramsResult as number) || 0
     }
 
-    console.log(
-      'Scan result — totalBytes:',
-      totalBytes,
-      'breakdown:',
-      JSON.stringify(breakdownBytes)
-    )
+    // ========================================================================
+    // 5. Refactored Formatting Helpers (Supports clean MB scaling and KB defaults)
+    // ========================================================================
+    const formatBytes = (bytes: number): string => {
+      if (bytes === 0) return '0 KB'
+      const k = 1024
+      const sizes = ['Bytes', 'KB', 'MB']
+      const i = Math.floor(Math.log(bytes) / Math.log(k))
+
+      // If resource tracks under 1 KB, enforce clean fractional KB sizing instead of bytes
+      if (i === 0) return `${(bytes / k).toFixed(2)} KB`
+
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
+    }
+
+    const getPercentage = (categoryBytes: number): string => {
+      if (totalBytes === 0) return '0%'
+      const percentage = (categoryBytes / totalBytes) * 100
+      // If it is greater than zero but under 0.1%, display <0.1% to avoid broken layout/0% readings
+      if (percentage > 0 && percentage < 0.1) return '<0.1%'
+      return `${parseFloat(percentage.toFixed(1))}%`
+    }
+
+    const uiBreakdown = {
+      html: {
+        size: formatBytes(breakdownBytes.html),
+        share: getPercentage(breakdownBytes.html),
+      },
+      css: {
+        size: formatBytes(breakdownBytes.css),
+        share: getPercentage(breakdownBytes.css),
+      },
+      javascript: {
+        size: formatBytes(breakdownBytes.javascript),
+        share: getPercentage(breakdownBytes.javascript),
+      },
+      images: {
+        size: formatBytes(breakdownBytes.images),
+        share: getPercentage(breakdownBytes.images),
+      },
+      fonts: {
+        size: formatBytes(breakdownBytes.fonts),
+        share: getPercentage(breakdownBytes.fonts),
+      },
+      other: {
+        size: formatBytes(breakdownBytes.other),
+        share: getPercentage(breakdownBytes.other),
+      },
+    }
+
+    // 6. Map Sustainability Index Grade Symbol based on strict SWDM v4 thresholds
+    let sustainabilityIndex = 'F'
+    if (finalCo2Grams <= 0.18) sustainabilityIndex = 'A+'
+    else if (finalCo2Grams <= 0.26) sustainabilityIndex = 'A'
+    else if (finalCo2Grams <= 0.46) sustainabilityIndex = 'B'
+    else if (finalCo2Grams <= 0.63) sustainabilityIndex = 'C'
+    else if (finalCo2Grams <= 0.85) sustainabilityIndex = 'D'
 
     return {
       url,
       co2Grams: parseFloat(finalCo2Grams.toFixed(4)),
-      breakdownBytes,
+      sustainabilityIndex,
+      breakdown: uiBreakdown,
       lighthouseFakeRun: 1,
     }
   } catch (error: any) {
@@ -185,6 +229,17 @@ export default defineEventHandler(async (event) => {
     console.error('====================================')
     throw createError({ statusCode: 500, statusMessage: error.message })
   } finally {
+    // Clear references out of memory explicitly
+    requestTypes.clear()
+
+    // Safely detach the CDP link before closing browser to ensure Vercel exits cleanly
+    if (cdpSession) {
+      try {
+        await cdpSession.detach()
+      } catch (detachError) {
+        console.error('Error detaching CDP Session:', detachError)
+      }
+    }
     if (browser) {
       await browser.close()
     }
