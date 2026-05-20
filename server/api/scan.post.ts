@@ -97,6 +97,9 @@ export default defineEventHandler(async (event) => {
     await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 })
     console.log('Page loaded successfully')
 
+    // Allow Browserless WebSocket to flush all buffer promises
+    await new Promise((resolve) => setTimeout(resolve, 3000))
+
     // Tally all buffered responses
     const breakdownBytes = {
       html: 0,

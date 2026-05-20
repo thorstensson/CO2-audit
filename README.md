@@ -16,7 +16,7 @@ Carbonlog runs Lighthouse audits via Puppeteer, extracts performance metrics, an
 
 ## Status
 
-:white_check_mark: v1 live.
+:white_check_mark: v1 live. GOOSE.
 
 ## Setup
 
