@@ -32,7 +32,7 @@
 <template>
   <section class="flex min-h-screen items-center justify-center">
     <div
-      class="bg-secondary flex w-full max-w-md flex-col gap-4 rounded-2xl border border-gray-100 p-8"
+      class="bg-secondary flex w-full max-w-sm flex-col gap-4 rounded-2xl border border-gray-100 p-8"
     >
       <!-- Heading Title Header -->
       <div class="text-center">

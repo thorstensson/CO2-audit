@@ -4,7 +4,6 @@ import puppeteer from 'puppeteer'
 import { co2 } from '@tgwf/co2'
 
 export default defineEventHandler(async (event) => {
-  // 1. Get the URL and verification token from the client payload
   const body = await readBody(event)
   const { token } = body
   let url = body.url
@@ -20,12 +19,10 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  // URL Normalizer
   if (!/^https?:\/\//i.test(url)) {
     url = `https://${url}`
   }
 
-  // 2. Validate the token using local ALTCHA cryptography
   console.log('Verifying ALTCHA puzzle payload...')
   const config = useRuntimeConfig()
 
@@ -59,7 +56,6 @@ export default defineEventHandler(async (event) => {
   }
   console.log('ALTCHA verification successful!')
 
-  // 3. Smart Browser Connection
   const isProd = process.env.NODE_ENV === 'production'
   let browser
 
@@ -81,8 +77,27 @@ export default defineEventHandler(async (event) => {
 
     const page = await browser.newPage()
 
-    // 4. Track network bytes transfer size AND split them by resource categories
-    let totalBytes = 0
+    // Collect buffer promises for accurate byte measurement
+    const bufferEntries: Promise<{ bytes: number; type: string }>[] = []
+
+    page.on('response', (response) => {
+      const status = response.status()
+      if (status >= 200 && status < 400) {
+        const resourceType = response.request().resourceType()
+        bufferEntries.push(
+          response
+            .buffer()
+            .then((buf) => ({ bytes: buf.length, type: resourceType }))
+            .catch(() => ({ bytes: 0, type: resourceType }))
+        )
+      }
+    })
+
+    console.log('Navigating to:', url)
+    await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 })
+    console.log('Page loaded successfully')
+
+    // Tally all buffered responses
     const breakdownBytes = {
       html: 0,
       css: 0,
@@ -91,60 +106,20 @@ export default defineEventHandler(async (event) => {
       fonts: 0,
       other: 0,
     }
+    let totalBytes = 0
 
-    page.on('response', (response) => {
-      const status = response.status()
-      if (status >= 200 && status < 400) {
-        const headers = response.headers()
-        const contentLength = headers['content-length']
-        const resourceType = response.request().resourceType()
-
-        let bytes = 0
-        if (contentLength) {
-          bytes = parseInt(contentLength, 10)
-        }
-
-        totalBytes += bytes
-
-        // Sort bytes into matching breakdown buckets
-        if (resourceType === 'document') {
-          breakdownBytes.html += bytes
-        } else if (resourceType === 'stylesheet') {
-          breakdownBytes.css += bytes
-        } else if (resourceType === 'script') {
-          breakdownBytes.javascript += bytes
-        } else if (resourceType === 'image' || resourceType === 'media') {
-          breakdownBytes.images += bytes
-        } else if (resourceType === 'font') {
-          breakdownBytes.fonts += bytes
-        } else {
-          breakdownBytes.other += bytes
-        }
-      }
-    })
-
-    // 5. Navigate and wait for the page to load
-    console.log('Navigating to:', url)
-    const mainResponse = await page.goto(url, {
-      waitUntil: 'load',
-      timeout: 60000,
-    })
-    console.log('Page loaded successfully')
-
-    // FALLBACK: If HTML is still 0 because of chunked transfer headers, read the text buffer size
-    if (breakdownBytes.html === 0 && mainResponse) {
-      try {
-        const htmlContent = await mainResponse.text()
-        const fallbackHtmlBytes = Buffer.byteLength(htmlContent, 'utf8')
-
-        breakdownBytes.html = fallbackHtmlBytes
-        totalBytes += fallbackHtmlBytes
-      } catch (e) {
-        console.warn('Fallback HTML reading skipped')
-      }
+    const results = await Promise.all(bufferEntries)
+    for (const { bytes, type } of results) {
+      totalBytes += bytes
+      if (type === 'document') breakdownBytes.html += bytes
+      else if (type === 'stylesheet') breakdownBytes.css += bytes
+      else if (type === 'script') breakdownBytes.javascript += bytes
+      else if (type === 'image' || type === 'media')
+        breakdownBytes.images += bytes
+      else if (type === 'font') breakdownBytes.fonts += bytes
+      else breakdownBytes.other += bytes
     }
 
-    // 6. Calculate CO2 emissions using the 1byte model
     const co2Emission = new co2({ model: '1byte' })
     const co2GramsResult = co2Emission.perByte(totalBytes)
 
@@ -166,7 +141,6 @@ export default defineEventHandler(async (event) => {
           : (co2GramsResult as number) || 0
     }
 
-    // 7. Return values
     return {
       url,
       co2Grams: parseFloat(finalCo2Grams.toFixed(4)),
@@ -179,7 +153,6 @@ export default defineEventHandler(async (event) => {
     console.error('====================================')
     throw createError({ statusCode: 500, statusMessage: error.message })
   } finally {
-    // 8. Safely close browser session
     if (browser) {
       await browser.close()
     }

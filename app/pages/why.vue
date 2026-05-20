@@ -26,7 +26,7 @@
           </h2>
           <p>
             I built this app to learn more about CO₂ emissons on the web. I do
-            not pretend to always follow best practice, but we all have to start
+            not pretend to follow best practice, but we all have to start
             somewhere!
           </p>
           <p>
@@ -124,7 +124,7 @@
           class="border-secondary/10 bg-secondary/5 rounded-2xl border p-6 text-center transition-all"
         >
           <div class="mb-4 flex justify-center">
-            <GlobeEarthIcon height="4em" />
+            <Icon name="glyphs-poly:globe-africa" size="48" />
           </div>
           <h3 class="font-heading text-h3 text-acc2 mb-2 font-bold">
             The Green Pillar
@@ -139,7 +139,7 @@
           class="border-secondary/10 bg-secondary/5 rounded-2xl border p-6 text-center transition-all"
         >
           <div class="mb-4 flex justify-center">
-            <Speedometer3Icon height="4em" />
+            <Icon name="glyphs-poly:speedometer-3" size="48" />
           </div>
           <h3 class="font-heading text-h3 text-acc2 mb-2 font-bold">
             The Fast Pillar
@@ -154,7 +154,7 @@
           class="border-secondary/10 bg-secondary/5 rounded-2xl border p-6 text-center transition-all"
         >
           <div class="mb-4 flex justify-center">
-            <Tree4Icon height="4em" />
+            <Icon name="glyphs-poly:tree-4" size="48" />
           </div>
           <h3 class="font-heading text-h3 text-acc2 mb-2 font-bold">
             The Fair Pillar

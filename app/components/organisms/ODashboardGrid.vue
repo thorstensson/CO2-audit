@@ -128,7 +128,7 @@
       <div
         class="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-gray-50 text-xl font-bold text-gray-400"
       >
-        <AnalyticsIcon height="1em" />
+        <Icon name="glyphs-poly:analytics" size="48" />
       </div>
       <h3 class="text-acc3 mt-4 text-sm font-semibold">
         No scan analytics loaded

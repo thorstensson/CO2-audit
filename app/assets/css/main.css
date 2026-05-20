@@ -14,13 +14,13 @@
     --text-hero: clamp(2.5rem, 1rem + 4vw, 6rem);
 
     /* Core palette */
-    --color-primary: #211A1E;
+    --color-primary: #1c2121;
     --color-primary-100: #3C2D33;
     --color-primary-200: #635157;
     --color-primary-300: #928387;
     --color-primary-400: #BBB4B7;
 
-    --color-secondary: #F5EDF0;
+    --color-secondary: #F0F4F9;
     --color-secondary-100: #DDD5D8;
     --color-secondary-200: #B8B2B4;
     --color-secondary-300: #7B7778;
@@ -31,7 +31,7 @@
     /* celadon green */
     --color-acc2: #537A5A;
     /* fern green */
-    --color-acc3: #EACBD7;
+    --color-acc3: #C9D6EA;
 }
 
 body {

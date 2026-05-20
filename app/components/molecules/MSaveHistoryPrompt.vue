@@ -74,12 +74,7 @@
 <template>
   <div
     v-if="showSavePrompt"
-    class="fixed right-8 bottom-8 z-50 flex max-w-md min-w-[340px] flex-col gap-3 rounded-xl border p-4 shadow-lg backdrop-blur-md transition-all duration-300 sm:flex-row sm:items-center"
-    :class="
-      saveSuccess
-        ? 'border-blue-200 bg-blue-50/60'
-        : 'border-green-200 bg-green-50/20'
-    "
+    class="border-secondary/10 bg-secondary/5 fixed right-8 bottom-8 z-50 flex max-w-md min-w-[340px] flex-col gap-3 rounded-xl border p-4 shadow-lg backdrop-blur-md transition-all duration-300 sm:flex-row sm:items-center"
   >
     <div class="grid grid-cols-1 text-center sm:text-left">
       <div

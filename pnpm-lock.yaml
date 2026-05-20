@@ -17,6 +17,9 @@ importers:
       '@fontsource/be-vietnam-pro':
         specifier: ^5.2.8
         version: 5.2.8
+      '@iconify-vue/fa6-brands':
+        specifier: ^1.0.3
+        version: 1.0.3(vue@3.5.34(typescript@6.0.3))
       '@iconify-vue/glyphs-poly':
         specifier: ^1.0.2
         version: 1.0.2(vue@3.5.34(typescript@6.0.3))
@@ -714,6 +717,9 @@ packages:
   '@humanwhocodes/retry@0.4.3':
     resolution: {integrity: sha512-bV0Tgo9K4hfPCek+aMAn81RppFKv2ySDQeMoSZuvTASywNTnVJCArCZE2FWqpvIatKu7VMRLWlR1EazvVhDyhQ==}
     engines: {node: '>=18.18'}
+
+  '@iconify-vue/fa6-brands@1.0.3':
+    resolution: {integrity: sha512-qqO2wkBnf9ui2GO4PfH+1ohQ5L1cjPG5oiw7JN51PjSJaCcxy62FHvjb7BVUtQh0L+PYgnebeHHMRpSnFzHNNg==}
 
   '@iconify-vue/glyphs-poly@1.0.2':
     resolution: {integrity: sha512-RXvm0ZknY2U8zMNL9SBO73N4ECukixYbBX4YfAy3aWJH3AzDzP7tIAMs29yFI0B8rpv1dRjZYjLh/Wr+V/ZRkA==}
@@ -7092,6 +7098,12 @@ snapshots:
   '@humanwhocodes/module-importer@1.0.1': {}
 
   '@humanwhocodes/retry@0.4.3': {}
+
+  '@iconify-vue/fa6-brands@1.0.3(vue@3.5.34(typescript@6.0.3))':
+    dependencies:
+      '@iconify/css-vue': 1.0.2(vue@3.5.34(typescript@6.0.3))
+    transitivePeerDependencies:
+      - vue
 
   '@iconify-vue/glyphs-poly@1.0.2(vue@3.5.34(typescript@6.0.3))':
     dependencies:

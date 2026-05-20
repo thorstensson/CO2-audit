@@ -67,7 +67,7 @@
     >
       <div class="w-full px-4 py-4 md:px-[4vw]">
         <div class="flex items-center justify-between">
-          <MHeader />
+          <MHeader @click="isOpen = false" />
           <button
             @click="toggle"
             :aria-expanded="isOpen"
@@ -116,6 +116,10 @@
       <!-- 2. PLUGGED IN MOBILE MOLECULE HERE -->
       <div class="mt-10 pr-4">
         <MAuthControl mode="mobile" @click="isOpen = false" />
+      </div>
+
+      <div class="text-secondary mt-6 flex gap-4 pr-4">
+        <MSocial />
       </div>
     </div>
   </nav>

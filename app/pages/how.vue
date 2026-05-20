@@ -25,44 +25,38 @@
             The Creative Stack
           </h2>
 
-          <h3 class="font-heading text-h3 text-acc2 mt-4 font-bold">
-            Nuxt 4
-            <span class="text-secondary/60 font-normal"
-              >(Stay progressive)</span
-            >
-          </h3>
+          <h3 class="font-heading text-h3 text-acc2 mt-4 font-bold">Nuxt 4</h3>
           <p>
-            Handles the reactive frontend and layout. Uses Nitro server routes
-            (<code
+            My favourite progressive meta-framework handles the reactive
+            frontend and layout. Nuxt's Nitro server runs (<code
               class="rounded bg-green-50 px-1 font-mono text-sm text-green-700"
               >/server/api/</code
-            >) to run backend scripts. Content is sent to the browser in
-            immediate chunks rather than waiting for the whole page to build on
-            the server (SSR).
+            >) the backend scripts. Content is sent to the browser in immediate
+            chunks rather than waiting for the whole page to build on the server
+            (I need a dictinonary for SSR).
           </p>
 
           <h3 class="font-heading text-h3 text-acc2 mt-4 font-bold">
             Puppeteer
-            <span class="text-secondary/60 font-normal">(The Auditor)</span>
           </h3>
           <p>
-            We launch a headless Chromium browser on the server, load the page
-            like a real visitor would, and observe every network request in real
-            time. As assets are downloaded, we measure their transfer sizes and
-            automatically group them into categories such as HTML, JavaScript,
-            CSS, and images.
+            Puppeteer launches a headless Chromium instance on the server, loads
+            the page like a real user, and captures the network response as it
+            arrives. The code measures the actual byte sizes from those response
+            buffers and chops them into HTML, CSS, JavaScript, images, fonts,
+            and other assets.
           </p>
 
           <h3 class="font-heading text-h3 text-acc2 mt-4 font-bold">
             Supabase
-            <span class="text-secondary/60 font-normal">(The Data Hub)</span>
           </h3>
           <p>
-            We store audit history and page metrics in PostgreSQL, allowing
-            reports to be tracked over time. To protect user data, access is
-            restricted through Row Level Security (RLS), while heavier
-            calculations are cached so we don’t need to rerun expensive browser
-            analyses.
+            I store audit history and page metrics in the Supabase PostgreSQL.
+            This way, if you're logged in, you can check out your past searches
+            and compare. (I promise here that more functionality will ship to
+            motivate this login feature.) Access is secured through Row Level
+            Security (RLS), while heavier calculations are cached to avoid
+            rerunning expensive browser analyses.
           </p>
         </div>
 
@@ -107,14 +101,13 @@
           <h2 class="font-heading text-h2 text-acc2 text-center font-bold">
             What's Baking for V2
           </h2>
-          <p class="text-secondary/80 mx-auto mb-6 text-center">
+          <p class="text-secondary mb-6">
             Let's map out the next iteration to make these sustainability
             insights even more green!
           </p>
 
           <h3 class="font-heading text-h3 text-acc2 mt-4 font-bold">
             Framework Detection
-            <span class="text-secondary/60 font-normal">(Smart tips)</span>
           </h3>
           <p>
             The auditor will sniff out if a site is running on Nuxt, Next.js,
@@ -124,7 +117,6 @@
 
           <h3 class="font-heading text-h3 text-acc2 mt-4 font-bold">
             SSR vs. SPA Analysis
-            <span class="text-secondary/60 font-normal">(Under the hood)</span>
           </h3>
           <p>
             By inspecting the page’s initial server response, we can tell
