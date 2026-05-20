@@ -77,7 +77,6 @@ export default defineEventHandler(async (event) => {
 
     const page = await browser.newPage()
 
-    // Accumulated in real time as buffers resolve
     const breakdownBytes = {
       html: 0,
       css: 0,
@@ -88,27 +87,37 @@ export default defineEventHandler(async (event) => {
     }
     let totalBytes = 0
 
-    page.on('response', async (response) => {
+    // Collect all asynchronous processing tasks securely
+    const processingPromises: Promise<void>[] = []
+
+    page.on('response', (response) => {
       const status = response.status()
       if (status >= 200 && status < 400) {
         const resourceType = response.request().resourceType()
-        try {
-          const buf = await response.buffer()
-          if (buf && buf.length > 0) {
-            const bytes = buf.length
-            totalBytes += bytes
-            if (resourceType === 'document') breakdownBytes.html += bytes
-            else if (resourceType === 'stylesheet') breakdownBytes.css += bytes
-            else if (resourceType === 'script')
-              breakdownBytes.javascript += bytes
-            else if (resourceType === 'image' || resourceType === 'media')
-              breakdownBytes.images += bytes
-            else if (resourceType === 'font') breakdownBytes.fonts += bytes
-            else breakdownBytes.other += bytes
-          }
-        } catch {
-          // ignore tracking pixels or aborted streams
-        }
+
+        // Push the async work execution block into the array
+        const work = response
+          .buffer()
+          .then((buf) => {
+            if (buf && buf.length > 0) {
+              const bytes = buf.length
+              totalBytes += bytes
+              if (resourceType === 'document') breakdownBytes.html += bytes
+              else if (resourceType === 'stylesheet')
+                breakdownBytes.css += bytes
+              else if (resourceType === 'script')
+                breakdownBytes.javascript += bytes
+              else if (resourceType === 'image' || resourceType === 'media')
+                breakdownBytes.images += bytes
+              else if (resourceType === 'font') breakdownBytes.fonts += bytes
+              else breakdownBytes.other += bytes
+            }
+          })
+          .catch(() => {
+            // safely ignore analytic/tracking pixels or tracking drops
+          })
+
+        processingPromises.push(work)
       }
     })
 
@@ -116,8 +125,11 @@ export default defineEventHandler(async (event) => {
     await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 })
     console.log('Page loaded successfully')
 
-    // Allow Browserless WebSocket to flush trailing async events
+    // Allow Browserless WebSocket to flush trailing async stream requests
     await new Promise((resolve) => setTimeout(resolve, 3000))
+
+    // CRUCIAL: Force the main execution thread to wait until every background buffer has completely tabulated
+    await Promise.all(processingPromises)
 
     const co2Emission = new co2({ model: '1byte' })
     const co2GramsResult = co2Emission.perByte(totalBytes)
