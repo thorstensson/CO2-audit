@@ -2,6 +2,18 @@
   const route = useRoute()
   const supabase = useSupabaseClient()
 
+  const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
+
+  async function waitForSession(timeoutMs = 8000, intervalMs = 150) {
+    const start = Date.now()
+    while (Date.now() - start < timeoutMs) {
+      const { data } = await supabase.auth.getSession()
+      if (data.session) return data.session
+      await sleep(intervalMs)
+    }
+    throw new Error('Timed out waiting for session on client')
+  }
+
   onMounted(async () => {
     const code = route.query.code
 
@@ -15,8 +27,16 @@
       navigateTo('/login')
       return
     }
-    // ✅ Sync the client auth state *now* (no page refresh)
-    await supabase.auth.getUser()
+
+    // IMPORTANT: wait for session propagation on the client (timing fix)
+    try {
+      await waitForSession()
+    } catch {
+      // if it fails, fall back to login rather than racing/redirecting to a wrong state
+      navigateTo('/login')
+      return
+    }
+
     navigateTo('/', { replace: true })
   })
 </script>
