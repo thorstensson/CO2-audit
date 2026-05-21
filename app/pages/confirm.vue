@@ -12,7 +12,7 @@
 
     supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_IN' && session) {
-        navigateTo('/', { replace: true })
+        setTimeout(() => navigateTo('/', { replace: true }), 1000)
       }
     })
   })
