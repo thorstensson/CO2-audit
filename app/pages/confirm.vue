@@ -4,16 +4,33 @@
 
   onMounted(async () => {
     const token_hash = route.query.token_hash as string
+    const type = 'magiclink'
 
     if (!token_hash) {
-      return navigateTo('/login')
+      navigateTo('/login')
+      return
     }
 
     try {
-      await supabase.auth.verifyOtp({ token_hash, type: 'magiclink' })
-      return navigateTo('/', { external: true })
+      // 1) Exchange token_hash for a session
+      const { error } = await supabase.auth.verifyOtp({ token_hash, type })
+      if (error) throw error
+
+      // 2) Force the client to load/update its session state
+      await supabase.auth.getSession()
+
+      // 3) Confirm user is available
+      const { data, error: userErr } = await supabase.auth.getUser()
+      if (userErr) throw userErr
+      if (!data?.user) {
+        navigateTo('/login')
+        return
+      }
+
+      // 4) Navigate internally
+      await navigateTo('/')
     } catch {
-      return navigateTo('/login')
+      navigateTo('/login')
     }
   })
 </script>
