@@ -126,7 +126,7 @@ export default defineNuxtConfig({
       auth: {
         persistSession: true,
         autoRefreshToken: true,
-        detectSessionInUrl: false,
+        detectSessionInUrl: true,
       },
     },
     // ========================================================================
@@ -138,7 +138,7 @@ export default defineNuxtConfig({
     },
     redirectOptions: {
       login: '/login',
-      callback: '/',
+      callback: '/confirm',
       exclude: ['/', '/why', '/how', '/login', '/maintenance', '/api/scan'],
     },
   },
