@@ -137,7 +137,7 @@ export default defineNuxtConfig({
     },
     redirectOptions: {
       login: '/login',
-      callback: '/confirm',
+      callback: '/api/auth/confirm',
       exclude: ['/', '/why', '/how', '/login', '/maintenance', '/api/scan'],
     },
   },
