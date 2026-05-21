@@ -37,7 +37,7 @@ export default defineNuxtConfig({
             "script-src 'self' 'unsafe-inline'",
             "frame-src 'self'",
             // FIXED: Granted explicit connection trust to your active Supabase instance
-            "connect-src 'self' https://supabase.co",
+            "connect-src 'self' https://*.supabase.co",
             "img-src 'self' data: https:",
             "style-src 'self' 'unsafe-inline'",
             // FIXED: Configured security headroom for the native ALTCHA script workers

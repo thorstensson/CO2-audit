@@ -149,40 +149,6 @@
 
 <template>
   <div class="mx-auto max-w-screen-2xl px-6 py-12">
-    <!-- ========================================================== -->
-    <!-- ISOLATED JSON DIAGNOSTIC TRACE BLOCK                       -->
-    <!-- Displays state output safely to find layout discrepancies -->
-    <!-- ========================================================== -->
-    <div
-      class="mb-6 rounded-xl border border-amber-200 bg-amber-50/40 p-4 font-mono text-xs text-amber-900"
-    >
-      <p class="mb-2 font-bold tracking-wider text-amber-800 uppercase">
-        🔍 Composable Reactive State Diagnostics
-      </p>
-      <div>
-        <span class="font-bold">showDashboard (Computed):</span>
-        {{ showDashboard }}
-      </div>
-      <div><span class="font-bold">isScanning:</span> {{ isScanning }}</div>
-      <div>
-        <span class="font-bold">scanHistory Length:</span>
-        {{ scanHistory?.length || 0 }}
-      </div>
-      <div>
-        <span class="font-bold">selectedIndex:</span> {{ selectedIndex }}
-      </div>
-      <div class="mt-3">
-        <span class="font-bold text-emerald-800">Raw selectedScan Object:</span>
-        <pre
-          v-if="selectedScan"
-          class="mt-1 max-h-60 overflow-auto rounded border border-gray-200 bg-white p-3 text-gray-800 shadow-inner"
-          >{{ JSON.stringify(selectedScan, null, 2) }}</pre
-        >
-        <span v-else class="ml-1 text-gray-500 italic">null / undefined</span>
-      </div>
-    </div>
-    <!-- ========================================================== -->
-
     <!-- State view if there are no loaded runs -->
     <div
       v-if="!scan && !isScanning"
@@ -319,6 +285,30 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- Pagination controls -->
+    <div
+      v-if="scanHistory.length > 1"
+      class="mt-16 flex items-center justify-center gap-4"
+    >
+      <button
+        :disabled="selectedIndex <= 0"
+        class="font-heading text-secondary/60 hover:text-secondary text-h3 cursor-pointer font-semibold tracking-widest transition disabled:opacity-30"
+        @click="goToPrev"
+      >
+        ← Prev
+      </button>
+      <span class="text-secondary/40 text-h3 font-mono"
+        >{{ selectedIndex + 1 }} / {{ scanHistory.length }}</span
+      >
+      <button
+        :disabled="selectedIndex >= scanHistory.length - 1"
+        class="font-heading text-secondary/60 hover:text-secondary text-h3 cursor-pointer font-semibold tracking-widest transition disabled:opacity-30"
+        @click="goToNext"
+      >
+        Next →
+      </button>
     </div>
   </div>
 </template>
