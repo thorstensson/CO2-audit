@@ -6,6 +6,7 @@
     const token_hash = route.query.token_hash as string
     const type = 'magiclink'
 
+    console.log('---------THE TOKEN HASH', token_hash)
     if (!token_hash) {
       navigateTo('/login')
       return
