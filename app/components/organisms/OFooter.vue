@@ -34,7 +34,7 @@
 </script>
 
 <template>
-  <footer class="bg-acc3 text-primary mt-20 p-8 text-xs">
+  <footer class="bg-acc3 text-primary mt-20 p-8 text-xs print:hidden">
     <!-- Changed from grid to flex with justify-between -->
     <div
       class="mx-auto flex w-full max-w-6xl flex-col gap-8 md:flex-row md:justify-between"

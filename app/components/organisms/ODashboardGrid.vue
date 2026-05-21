@@ -1,5 +1,10 @@
 <script setup lang="ts">
   import { computed } from 'vue'
+  import TreeIcon from '@iconify-vue/glyphs-poly/tree'
+  import CarSideIcon from '@iconify-vue/glyphs-poly/car-side'
+  import AnalyticsIcon from '@iconify-vue/glyphs-poly/analytics'
+
+  const handlePrint = () => window.print()
 
   // Fetch your global scan state array handlers natively
   const {
@@ -97,7 +102,7 @@
       return {
         grade: '—',
         label: 'No Rating Available',
-        style: 'text-gray-500 bg-gray-50 border-gray-200',
+        style: 'text-gray-500 bg-gray-100 border-gray-200',
       }
     }
     const grade = scan.value.sustainabilityIndex
@@ -106,35 +111,35 @@
       return {
         grade: 'A+',
         label: 'Eco-Friendly / Extremely Light',
-        style: 'text-emerald-600 bg-emerald-50 border-emerald-200',
+        style: 'text-emerald-600 bg-emerald-100 border-emerald-300',
       }
     }
     if (grade === 'A') {
       return {
         grade: 'A',
         label: 'Excellent',
-        style: 'text-emerald-500 bg-emerald-50/50 border-emerald-100',
+        style: 'text-emerald-500 bg-emerald-100 border-emerald-200',
       }
     }
     if (grade === 'B') {
       return {
         grade: 'B',
         label: 'Good / Well Optimized',
-        style: 'text-green-600 bg-green-50 border-green-200',
+        style: 'text-green-600 bg-green-100 border-green-200',
       }
     }
     if (grade === 'C') {
       return {
         grade: 'C',
         label: 'Moderate Impact',
-        style: 'text-yellow-600 bg-yellow-50 border-yellow-200',
+        style: 'text-yellow-600 bg-yellow-100 border-yellow-200',
       }
     }
     if (grade === 'D') {
       return {
         grade: 'D',
         label: 'High Impact',
-        style: 'text-orange-600 bg-orange-50 border-orange-200',
+        style: 'text-orange-600 bg-orange-100 border-orange-200',
       }
     }
 
@@ -142,13 +147,37 @@
     return {
       grade: 'F',
       label: 'Heavy Carbon Load',
-      style: 'text-rose-600 bg-rose-50 border-rose-200',
+      style: 'text-rose-600 bg-rose-100 border-rose-200',
     }
   })
 </script>
 
 <template>
   <div class="mx-auto max-w-screen-2xl px-6 py-12">
+    <!-- Pagination controls -->
+    <div
+      v-if="scanHistory.length > 1"
+      class="mb-6 flex items-center justify-center gap-4 print:hidden"
+    >
+      <button
+        :disabled="selectedIndex <= 0"
+        class="font-heading text-secondary/60 hover:text-secondary text-h3 cursor-pointer font-semibold tracking-widest transition disabled:opacity-30"
+        @click="goToPrev"
+      >
+        ← Prev
+      </button>
+      <span class="text-secondary/40 text-h3 font-mono"
+        >{{ selectedIndex + 1 }} / {{ scanHistory.length }}</span
+      >
+      <button
+        :disabled="selectedIndex >= scanHistory.length - 1"
+        class="font-heading text-secondary/60 hover:text-secondary text-h3 cursor-pointer font-semibold tracking-widest transition disabled:opacity-30"
+        @click="goToNext"
+      >
+        Next →
+      </button>
+    </div>
+
     <!-- State view if there are no loaded runs -->
     <div
       v-if="!scan && !isScanning"
@@ -184,7 +213,7 @@
     <!-- Visual Dashboard (Gated safely by the single showDashboard computed condition) -->
     <div
       v-else-if="showDashboard"
-      class="grid grid-cols-1 gap-8 lg:grid-cols-3"
+      class="grid grid-cols-1 gap-8 lg:grid-cols-3 print:break-before-page"
     >
       <div
         class="bg-primary overflow-hidden rounded-2xl border border-gray-100 shadow-sm lg:col-span-2"
@@ -257,58 +286,70 @@
         </div>
 
         <!-- Real-World Equivalents -->
-        <div
-          class="bg-primary rounded-2xl border border-gray-100 p-6 shadow-sm"
-        >
-          <h4 class="text-h3 text-acc2 font-bold">Real-World Equivalents</h4>
-          <p class="mt-1 text-base">
-            If this page hits 10,000 monthly views, it equals:
-          </p>
-
-          <div class="text-primary mt-4 space-y-3 text-sm">
-            <div class="flex items-center gap-3">
-              <span class="text-xl">🌳</span>
-              <p class="text-base">
-                Requires
-                <span class="font-semibold">{{
+        <div class="text-primary mt-4 space-y-3 text-sm">
+          <!-- Fossil Car Travel Distance -->
+          <div class="flex items-center gap-3 rounded-xl bg-green-50 p-2">
+            <CarSideIcon height="4em" />
+            <div>
+              <p class="font-mono font-semibold">
+                {{
                   scan?.co2Grams
-                    ? ((Number(scan.co2Grams) * 120000) / 22000).toFixed(1)
-                    : '0.0'
-                }}</span>
-                trees to absorb those yearly emissions.
+                    ? scan.co2Grams / 0.12 >= 1000
+                      ? (scan.co2Grams / 120).toFixed(2) + ' km'
+                      : (scan.co2Grams / 0.12).toFixed(1) + ' m'
+                    : '0.0 m'
+                }}
               </p>
-            </div>
-            <div class="flex items-center gap-3">
-              <span class="text-xl">🚗</span>
-              <p class="text-base">Equivalent to driving a standard car.</p>
+              <p>Distance driven in a fossil-fueled car equivalent.</p>
             </div>
           </div>
+
+          <!-- Tree Absorption Duration -->
+          <div class="flex items-center gap-3 rounded-xl bg-green-50 p-2">
+            <TreeIcon height="4em" />
+            <div>
+              <p class="font-mono font-semibold">
+                {{
+                  scan?.co2Grams
+                    ? scan.co2Grams / 0.04185 >= 60
+                      ? (scan.co2Grams / 2.511).toFixed(1) + ' hours'
+                      : (scan.co2Grams / 0.04185).toFixed(1) + ' mins'
+                    : '0.0 mins'
+                }}
+              </p>
+              <p>Time for a mature tree to absorb this amount.</p>
+            </div>
+          </div>
+
+          <!-- Coffee Footprint Equivalent -->
+          <div class="flex items-center gap-3 rounded-xl bg-green-50 p-2">
+            <Icon
+              name="streamline-plump-color:coffee-mug-flat"
+              size="48"
+              class="shrink-0"
+            />
+            <div>
+              <p class="font-mono font-semibold">
+                {{
+                  scan?.co2Grams
+                    ? scan.co2Grams >= 250
+                      ? (scan.co2Grams / 250).toFixed(1) + ' cups'
+                      : ((scan.co2Grams / 250) * 100).toFixed(1) + '% of a cup'
+                    : '0.0%'
+                }}
+              </p>
+              <p>Equal to the footprint of brewing this much coffee.</p>
+            </div>
+          </div>
+          <p class="text-secondary/60 text-xs italic">
+            No inflated or multiplied values. Based on one time measurement.
+          </p>
         </div>
       </div>
     </div>
 
-    <!-- Pagination controls -->
-    <div
-      v-if="scanHistory.length > 1"
-      class="mt-16 flex items-center justify-center gap-4"
-    >
-      <button
-        :disabled="selectedIndex <= 0"
-        class="font-heading text-secondary/60 hover:text-secondary text-h3 cursor-pointer font-semibold tracking-widest transition disabled:opacity-30"
-        @click="goToPrev"
-      >
-        ← Prev
-      </button>
-      <span class="text-secondary/40 text-h3 font-mono"
-        >{{ selectedIndex + 1 }} / {{ scanHistory.length }}</span
-      >
-      <button
-        :disabled="selectedIndex >= scanHistory.length - 1"
-        class="font-heading text-secondary/60 hover:text-secondary text-h3 cursor-pointer font-semibold tracking-widest transition disabled:opacity-30"
-        @click="goToNext"
-      >
-        Next →
-      </button>
+    <div v-if="showDashboard" class="mt-8 flex justify-center print:hidden">
+      <AButton variant="outline" label="Print as PDF" @click="handlePrint" />
     </div>
   </div>
 </template>

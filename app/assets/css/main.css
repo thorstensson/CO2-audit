@@ -28,9 +28,7 @@
 
     /* Eco accent */
     --color-acc1: #9AE19D;
-    /* celadon green */
     --color-acc2: #537A5A;
-    /* fern green */
     --color-acc3: #C9D6EA;
 }
 
@@ -46,7 +44,7 @@ body {
 /* Scrollbar — dark theme, minimal */
 * {
     scrollbar-width: thin;
-    scrollbar-color: var(--color-primary-200) var(--color-primary);
+    scrollbar-color: var(--color-acc3) var(--color-primary);
 }
 
 ::-webkit-scrollbar {
@@ -59,10 +57,29 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--color-primary-200);
+    background: var(--color-acc3);
     border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--color-primary-300);
+    background: var(--color-acc3);
+}
+
+@media print {
+
+    html,
+    body {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        background-color: var(--color-primary) !important;
+    }
+
+    @page {
+        size: auto;
+        margin: 0mm;
+    }
+
+    body {
+        padding: 20mm;
+    }
 }

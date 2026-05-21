@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { computed } from 'vue'
+  import { computed, ref } from 'vue'
   import { useRoute } from 'vue-router'
 
   const route = useRoute()
@@ -7,6 +7,18 @@
   const navItems = ['WHY', 'HOW']
 
   const activeRoute = computed(() => route.path)
+
+  // Automatically syncs the body overflow class across SSR, resizing, and unmounting
+  useHead({
+    bodyAttrs: {
+      class: computed(() => (isOpen.value ? 'max-md:overflow-hidden' : '')),
+    },
+  })
+
+  // Watch for route transitions to automatically shut down the overlay container
+  watch(activeRoute, () => {
+    isOpen.value = false
+  })
 
   function toggle() {
     isOpen.value = !isOpen.value
@@ -17,7 +29,7 @@
   <nav>
     <!-- Desktop nav bar -->
     <div
-      class="bg-primary/80 fixed top-0 left-0 z-50 hidden w-full backdrop-blur-sm md:block"
+      class="bg-primary/80 fixed top-0 left-0 z-50 hidden w-full backdrop-blur-sm md:block print:hidden"
     >
       <div class="w-full px-4 py-4 md:px-[4vw]">
         <div class="flex items-center justify-between">
@@ -63,7 +75,7 @@
 
     <!-- Mobile: top bar (always visible) -->
     <div
-      class="bg-primary/80 fixed top-0 left-0 z-50 w-full backdrop-blur-sm md:hidden"
+      class="bg-primary/80 fixed top-0 left-0 z-50 w-full backdrop-blur-sm md:hidden print:hidden"
     >
       <div class="w-full px-4 py-4 md:px-[4vw]">
         <div class="flex items-center justify-between">
@@ -82,7 +94,7 @@
     <!-- Mobile: slide-in overlay from right -->
     <div
       :class="isOpen ? 'translate-x-0' : 'translate-x-full'"
-      class="bg-primary/80 fixed inset-0 z-40 flex flex-col items-end justify-center pr-4 backdrop-blur-sm transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] md:hidden md:pr-[4vw]"
+      class="bg-primary/80 fixed inset-0 z-40 flex flex-col items-end justify-center pr-4 backdrop-blur-sm transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] md:hidden md:pr-[4vw] print:hidden"
     >
       <ul class="space-y-10 text-right">
         <li

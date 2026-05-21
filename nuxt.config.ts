@@ -1,4 +1,7 @@
 import tailwindcss from '@tailwindcss/vite'
+import TreeIcon from '@iconify-vue/glyphs-poly/tree'
+import CarSideIcon from '@iconify-vue/glyphs-poly/car-side'
+import AnalyticsIcon from '@iconify-vue/glyphs-poly/analytics'
 const fontBase = process.env.NUXT_EVERETT_FONT_URL
 
 export default defineNuxtConfig({

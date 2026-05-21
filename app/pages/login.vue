@@ -15,7 +15,7 @@
         email: email.value,
         options: {
           // Explicitly format with a trailing slash to satisfy Supabase URL matching rules
-          emailRedirectTo: `${window.location.origin}/`,
+          emailRedirectTo: `${window.location.origin}/confirm`,
         },
       })
 

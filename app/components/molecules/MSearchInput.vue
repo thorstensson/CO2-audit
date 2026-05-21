@@ -47,7 +47,7 @@
 </script>
 
 <template>
-  <div class="mx-auto mt-4 flex w-full max-w-2xl flex-col gap-4">
+  <div class="mx-auto mt-4 flex w-full max-w-2xl flex-col gap-4 print:hidden">
     <form class="flex flex-col gap-4" @submit.prevent="handleSubmit">
       <div class="flex flex-col gap-3 sm:flex-row">
         <input
@@ -55,7 +55,7 @@
           type="text"
           placeholder="Type website URL (e.g., https://my-site.com)"
           :disabled="isScanning"
-          class="flex-1 rounded-lg border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-green-500 focus:outline-none disabled:bg-gray-100"
+          class="disabled:bg-acc2/30 disabled:text-secondary/80 flex-1 rounded-lg border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-green-500 focus:outline-none"
         />
 
         <AButton variant="outline" label="Learn More" to="/how" />

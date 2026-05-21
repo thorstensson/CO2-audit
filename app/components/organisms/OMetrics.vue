@@ -22,6 +22,9 @@
 <template>
   <section class="relative py-16">
     <div class="mx-auto max-w-screen-2xl px-6">
+      <div class="hidden justify-center pb-6 print:flex">
+        <MHeader />
+      </div>
       <!-- Site heading — shown when a scan result is available -->
       <div
         :class="['mb-6 text-center', selectedScan ? 'visible' : 'invisible']"
@@ -29,7 +32,7 @@
         <p class="font-heading text-h2 text-acc2 font-semibold">
           Carbon Report:
         </p>
-        <p class="font-heading mt-1 inline-block max-w-full truncate text-sm">
+        <p class="font-heading text-body mt-1 inline-block max-w-full truncate">
           {{ selectedScan?.url }}
         </p>
       </div>
@@ -47,6 +50,19 @@
           :valueClass="savedClass"
         />
       </div>
+
+      <p
+        class="text-secondary/60 mx-auto mt-8 max-w-md text-center text-xs italic"
+      >
+        Close approximation of a webpage's carbon footprint using the
+        Sustainable Web Design (SWD) model via the @tgwf/co2 library.
+        <NuxtLink
+          to="/why"
+          class="hover:text-secondary/80 underline underline-offset-2"
+        >
+          Read more.
+        </NuxtLink>
+      </p>
     </div>
   </section>
 </template>
