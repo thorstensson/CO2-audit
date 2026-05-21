@@ -14,7 +14,7 @@
       const { error } = await supabase.auth.signInWithOtp({
         email: email.value,
         options: {
-          emailRedirectTo: `${window.location.origin}/confirm`,
+          emailRedirectTo: `${window.location.origin}/`,
         },
       })
 
