@@ -4,7 +4,7 @@
 
   const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
 
-  async function waitForSession(timeoutMs = 8000, intervalMs = 150) {
+  async function waitForSession(timeoutMs = 10000, intervalMs = 200) {
     const start = Date.now()
     while (Date.now() - start < timeoutMs) {
       const { data } = await supabase.auth.getSession()
@@ -17,32 +17,33 @@
   onMounted(async () => {
     const code = route.query.code
 
-    console.log('root.query.code', code)
+    console.log('confirm query.code', code)
 
     if (!code || Array.isArray(code) || typeof code !== 'string') {
       navigateTo('/')
       return
     }
 
-    const { error } = await supabase.auth.exchangeCodeForSession(code)
-    console.log('exchange data', data)
-    console.log('exchange error', error)
+    // 1) Exchange code -> session
+    const { data, error } = await supabase.auth.exchangeCodeForSession(code)
+    console.log('exchange data present?', !!data)
     if (error) {
+      console.log('exchange error', error)
       navigateTo('/login')
       return
     }
 
-    // IMPORTANT: wait for session propagation on the client (timing fix)
+    // 2) Wait until client sees the session cookie/state
     try {
-      await waitForSession()
-      console.log('await waitForSession()')
-    } catch {
-      // if it fails, fall back to login rather than racing/redirecting to a wrong state
+      const session = await waitForSession()
+      console.log('session ready', !!session?.access_token)
+    } catch (e) {
+      console.log('waitForSession failed', e)
       navigateTo('/login')
-      console('log catch failed navigate to login')
       return
     }
 
+    // 3) Navigate after session is confirmed in the client
     navigateTo('/', { replace: true })
   })
 </script>
