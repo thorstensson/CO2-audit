@@ -134,7 +134,6 @@ export default defineNuxtConfig({
     cookieOptions: {
       path: '/', // Explicitly forces the auth cookie to be visible across Nuxt 4 root
       secure: process.env.NODE_ENV === 'production', // Fixes local dev cookie blocking
-      sameSite: 'lax',
     },
     redirectOptions: {
       login: '/login',
