@@ -4,20 +4,19 @@
 
   onMounted(async () => {
     const code = route.query.code
-    if (!code || typeof code !== 'string') {
+
+    if (!code || Array.isArray(code) || typeof code !== 'string') {
       navigateTo('/')
       return
     }
 
-    // PKCE: exchange ?code=... for a session (sets Supabase SSR cookies)
     const { error } = await supabase.auth.exchangeCodeForSession(code)
     if (error) {
-      // optional: console.error(error)
       navigateTo('/login')
       return
     }
-
-    // remove the ?code from the URL
+    // ✅ Sync the client auth state *now* (no page refresh)
+    await supabase.auth.getUser()
     navigateTo('/', { replace: true })
   })
 </script>
