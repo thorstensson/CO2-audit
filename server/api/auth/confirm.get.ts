@@ -1,22 +1,24 @@
-// server/api/auth/confirm.get.ts
-
 import { serverSupabaseClient } from '#supabase/server'
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event)
-  const code = query.code as string
+
+  const token_hash = query.token_hash as string
+  const type = query.type as any
   const next = (query.next as string) || '/'
 
-  if (code) {
-    const supabase = await serverSupabaseClient(event)
-    const { error } = await supabase.auth.exchangeCodeForSession(code)
+  const supabase = await serverSupabaseClient(event)
+
+  if (token_hash && type) {
+    const { error } = await supabase.auth.verifyOtp({
+      token_hash,
+      type,
+    })
 
     if (!error) {
-      // The session cookies are now injected directly into the response headers
       return sendRedirect(event, next)
     }
   }
 
-  // Fallback to login if something fails
   return sendRedirect(event, '/login?error=auth-callback-failed')
 })
