@@ -1,9 +1,14 @@
 <script setup lang="ts">
-  const user = useSupabaseUser()
+  const supabase = useSupabaseClient()
 
-  watch(user, (newUser) => {
-    if (newUser) {
-      navigateTo('/')
+  onMounted(async () => {
+    const { data } = await supabase.auth.getSession()
+
+    if (data.session) {
+      await navigateTo('/')
+    } else {
+      // fallback safety
+      await navigateTo('/login')
     }
   })
 </script>
