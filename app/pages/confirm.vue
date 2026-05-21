@@ -2,21 +2,19 @@
 <script setup lang="ts">
   const user = useSupabaseUser()
   const route = useRoute()
-  const supabase = useSupabaseClient() // Added to run the code exchange
+  const supabase = useSupabaseClient()
 
-  // If the user lands here via a redirect link or OAuth provider
   watch(
     user,
     (newUser) => {
       if (newUser) {
-        // Session cookie has safely been minted; redirect safely to root
-        return navigateTo('/')
+        // Test: Forcing a standard window-level reload instead of an internal SPA push
+        return navigateTo('/', { external: true })
       }
     },
     { immediate: true }
   )
 
-  // Fallback handling if a code was missing or expired
   onMounted(async () => {
     const code = route.query.code as string
 
@@ -25,7 +23,6 @@
     }
 
     try {
-      // Trade the URL code from Gmail to mint the session cookie in this new window
       await supabase.auth.exchangeCodeForSession(code)
     } catch (error) {
       console.error('Magic link verification failed:', error)
