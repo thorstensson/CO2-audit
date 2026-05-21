@@ -17,12 +17,15 @@
   onMounted(async () => {
     const code = route.query.code
 
+    console.log('root.query.code', code)
+
     if (!code || Array.isArray(code) || typeof code !== 'string') {
       navigateTo('/')
       return
     }
 
     const { error } = await supabase.auth.exchangeCodeForSession(code)
+    console.log('error', error)
     if (error) {
       navigateTo('/login')
       return
@@ -31,9 +34,11 @@
     // IMPORTANT: wait for session propagation on the client (timing fix)
     try {
       await waitForSession()
+      console.log('await waitForSession()')
     } catch {
       // if it fails, fall back to login rather than racing/redirecting to a wrong state
       navigateTo('/login')
+      console('log catch failed navigate to login')
       return
     }
 
