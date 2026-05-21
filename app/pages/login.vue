@@ -14,8 +14,9 @@
       const { error } = await supabase.auth.signInWithOtp({
         email: email.value,
         options: {
-          // Explicitly format with a trailing slash to satisfy Supabase URL matching rules
-          emailRedirectTo: `${window.location.origin}/confirm`,
+          // Corrected to 'redirectTo' so Supabase reads the window origin,
+          // and pointed to the backend route we configured to handle cookies.
+          redirectTo: `${window.location.origin}/api/auth/confirm`,
         },
       })
 
