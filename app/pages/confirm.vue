@@ -3,36 +3,22 @@
   const supabase = useSupabaseClient()
 
   onMounted(async () => {
-    const token_hash = route.query.token_hash as string
-    const type = 'magiclink'
+    const code = route.query.code
+    if (!code || typeof code !== 'string') {
+      navigateTo('/')
+      return
+    }
 
-    console.log('---------THE TOKEN HASH', token_hash)
-    if (!token_hash) {
+    // PKCE: exchange ?code=... for a session (sets Supabase SSR cookies)
+    const { error } = await supabase.auth.exchangeCodeForSession(code)
+    if (error) {
+      // optional: console.error(error)
       navigateTo('/login')
       return
     }
 
-    try {
-      // 1) Exchange token_hash for a session
-      const { error } = await supabase.auth.verifyOtp({ token_hash, type })
-      if (error) throw error
-
-      // 2) Force the client to load/update its session state
-      await supabase.auth.getSession()
-
-      // 3) Confirm user is available
-      const { data, error: userErr } = await supabase.auth.getUser()
-      if (userErr) throw userErr
-      if (!data?.user) {
-        navigateTo('/login')
-        return
-      }
-
-      // 4) Navigate internally
-      await navigateTo('/')
-    } catch {
-      navigateTo('/login')
-    }
+    // remove the ?code from the URL
+    navigateTo('/', { replace: true })
   })
 </script>
 
