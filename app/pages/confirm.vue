@@ -25,7 +25,8 @@
     }
 
     const { error } = await supabase.auth.exchangeCodeForSession(code)
-    console.log('error', error)
+    console.log('exchange data', data)
+    console.log('exchange error', error)
     if (error) {
       navigateTo('/login')
       return
