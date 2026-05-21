@@ -1,16 +1,10 @@
-<!-- app/pages/confirm.vue -->
 <script setup lang="ts">
-  const route = useRoute()
+  const user = useSupabaseUser()
 
-  onMounted(() => {
-    const code = route.query.code as string
-
-    if (!code) {
-      return navigateTo('/login')
+  watch(user, (newUser) => {
+    if (newUser) {
+      navigateTo('/')
     }
-
-    // Force route directly to our explicit server-side cookie endpoint
-    return navigateTo(`/api/auth/confirm?code=${code}`, { external: true })
   })
 </script>
 

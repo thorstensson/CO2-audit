@@ -2,6 +2,7 @@
   import { ref } from 'vue'
 
   const supabase = useSupabaseClient()
+
   const email = ref('')
   const isLoading = ref(false)
   const linkSent = ref(false)
@@ -9,18 +10,16 @@
   async function handleMagicLinkLogin() {
     if (!email.value) return
     isLoading.value = true
-
     try {
       const { error } = await supabase.auth.signInWithOtp({
         email: email.value,
         options: {
-          // Corrected to 'redirectTo' so Supabase reads the window origin,
-          // and pointed to the backend route we configured to handle cookies.
-          redirectTo: `${window.location.origin}/api/auth/confirm`,
+          emailRedirectTo: `${window.location.origin}/confirm`,
         },
       })
 
       if (error) throw error
+
       linkSent.value = true
     } catch (err: any) {
       alert(`Authentication failed: ${err.message}`)
