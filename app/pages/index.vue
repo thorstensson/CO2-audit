@@ -47,6 +47,11 @@
   }
 
   onMounted(async () => {
+    // 0. Fetch history if already signed in (SPA navigation from confirm)
+    if (user.value?.id) {
+      fetchUserHistory(user.value.id)
+    }
+
     // 1. DIRECT DATABASE LISTENER: Replaces the broken watch block completely
     const { data } = client.auth.onAuthStateChange((event, session) => {
       if (session?.user?.id) {
