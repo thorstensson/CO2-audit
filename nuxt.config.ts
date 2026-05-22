@@ -71,8 +71,8 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     maintenanceMode: false,
-    altchaHmacKey: process.env.ALTCHA_HMAC_SECRET,
-    browserlessToken: process.env.BROWSERLESS_TOKEN,
+    altchaHmacKey: process.env.NUXT_ALTCHA_HMAC_SECRET,
+    browserlessToken: process.env.NUXT_BROWSERLESS_TOKEN,
   },
 
   components: [
