@@ -25,7 +25,8 @@
         scanHistory.value = logs.map((log: any) => ({
           url: log.url,
           co2Grams: log.co2_grams,
-          breakdownBytes: log.breakdown_bytes,
+          sustainabilityIndex: '—',
+          breakdown: JSON.parse(log.breakdown_bytes || '{}'),
         }))
 
         // Show the latest scan (index 0)
@@ -47,11 +48,6 @@
   }
 
   onMounted(async () => {
-    // 0. Fetch history if already signed in (SPA navigation from confirm)
-    if (user.value?.id) {
-      fetchUserHistory(user.value.id)
-    }
-
     // 1. DIRECT DATABASE LISTENER: Replaces the broken watch block completely
     const { data } = client.auth.onAuthStateChange((event, session) => {
       if (session?.user?.id) {
