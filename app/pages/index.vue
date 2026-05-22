@@ -48,7 +48,12 @@
   }
 
   onMounted(async () => {
-    // 1. DIRECT DATABASE LISTENER: Replaces the broken watch block completely
+    // 1. Immediately fetch history if already authenticated (covers post-redirect timing)
+    if (user.value?.id) {
+      fetchUserHistory(user.value.id)
+    }
+
+    // 2. Listen for future auth state changes
     const { data } = client.auth.onAuthStateChange((event, session) => {
       if (session?.user?.id) {
         fetchUserHistory(session.user.id)
