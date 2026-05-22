@@ -9,7 +9,6 @@
   let authListener: any = null
 
   async function fetchUserHistory(userId: string) {
-    console.log('fetchUserHistory', userId)
     try {
       const { data: logs, error } = await client
         .from('site_logs')
@@ -33,12 +32,6 @@
               : log.breakdown_bytes || {},
         }))
 
-        console.log(
-          'index, scanHistory',
-          selectedIndex.value,
-          scanHistory.value
-        )
-
         // Show the latest scan (index 0)
         selectedIndex.value = 0
         const latestScan = selectedScan.value
@@ -58,7 +51,6 @@
   }
 
   onMounted(async () => {
-    console.log('user check', user.value?.id)
     // 1. Immediately fetch history if already authenticated (covers post-redirect timing)
     if (user.value?.id) {
       fetchUserHistory(user.value.id)

@@ -23,7 +23,6 @@ export default defineEventHandler(async (event) => {
     url = `https://${url}`
   }
 
-  console.log('Verifying ALTCHA puzzle payload...')
   const config = useRuntimeConfig()
 
   let isHuman = false
@@ -54,7 +53,6 @@ export default defineEventHandler(async (event) => {
       statusMessage: 'Verification failed. Bots are not allowed.',
     })
   }
-  console.log('ALTCHA verification successful!')
 
   const isProd = process.env.NODE_ENV === 'production'
   let browser: any
@@ -62,15 +60,12 @@ export default defineEventHandler(async (event) => {
   const requestTypes = new Map()
 
   try {
-    console.log(`Environment: ${isProd ? 'PRODUCTION' : 'DEVELOPMENT'}`)
-
     if (isProd) {
       const browserlessEndpoint = `wss://chrome.browserless.io?token=${process.env.BROWSERLESS_TOKEN}&--use-gl=angle&--use-angle=gl`
       browser = await puppeteer.connect({
         browserWSEndpoint: browserlessEndpoint,
       })
     } else {
-      console.log('Puppeteer launching')
       browser = await puppeteer.launch({
         headless: true,
         channel: 'chrome',
@@ -79,7 +74,6 @@ export default defineEventHandler(async (event) => {
     }
 
     const page = await browser.newPage()
-    console.log('await browser.newPage')
 
     // ========================================================================
     // PRODUCTION FOOTPRINT: Mask Headless Signatures
@@ -133,7 +127,6 @@ export default defineEventHandler(async (event) => {
       else breakdownBytes.other += wireBytes
     })
 
-    console.log('Navigating to:', url)
     await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 })
     console.log(
       'Primary DOM Loaded. Holding window open for WebGL texture streaming...'
