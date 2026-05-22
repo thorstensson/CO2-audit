@@ -61,7 +61,7 @@ export default defineEventHandler(async (event) => {
 
   try {
     if (isProd) {
-      const browserlessEndpoint = `wss://chrome.browserless.io?token=${process.env.BROWSERLESS_TOKEN}&--use-gl=angle&--use-angle=gl`
+      const browserlessEndpoint = `wss://chrome.browserless.io?token=${config.browserlessToken}&--use-gl=angle&--use-angle=gl`
       browser = await puppeteer.connect({
         browserWSEndpoint: browserlessEndpoint,
       })
