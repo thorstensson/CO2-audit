@@ -22,9 +22,6 @@
     if (state === 'verified') {
       // Maps payload into your existing state setup smoothly
       turnstileToken.value = payload
-    } else {
-      // Clear token parameters if puzzle invalidates or expires
-      turnstileToken.value = ''
     }
   }
 
@@ -58,10 +55,6 @@
           class="disabled:bg-acc2/30 disabled:text-secondary/80 flex-1 rounded-lg border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-green-500 focus:outline-none"
         />
 
-        <AButton variant="outline" label="Learn More" to="/how" />
-      </div>
-
-      <div class="flex flex-col items-stretch gap-4 sm:items-center">
         <AButton
           type="submit"
           variant="green"
@@ -69,6 +62,10 @@
           :disabled="isScanning || !turnstileToken"
           class="w-full sm:w-auto"
         />
+      </div>
+
+      <div class="flex flex-col items-stretch gap-4 sm:items-center">
+        <AButton variant="outline" label="Learn More" to="/how" />
 
         <!-- 4. Corrected lowercase event binding case to map custom elements natively -->
         <ClientOnly class="self-center">

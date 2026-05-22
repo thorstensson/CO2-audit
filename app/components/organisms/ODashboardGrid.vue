@@ -348,6 +348,12 @@
       </div>
     </div>
 
+    <div
+      class="mt-5 hidden text-center text-sm text-gray-500 print:block print:break-inside-avoid"
+    >
+      Made by Thomas | www.thomasthorstensson.com
+    </div>
+
     <div v-if="showDashboard" class="mt-8 flex justify-center print:hidden">
       <AButton variant="outline" label="Print as PDF" @click="handlePrint" />
     </div>

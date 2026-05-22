@@ -6,7 +6,7 @@
         target="_blank"
         aria-label="Flickr"
       >
-        <Icon name="fa6-brands:flickr" size="24" />
+        <!-- <Icon name="fa6-brands:flickr" size="24" /> -->
       </a>
 
       <a
@@ -14,12 +14,12 @@
         target="_blank"
         aria-label="Bluesky"
       >
-        <Icon name="fa6-brands:bluesky" size="24" />
+        <!-- <Icon name="fa6-brands:bluesky" size="24" /> -->
       </a>
     </div>
 
-    <div>
-      <a href="mailto:someone@example.com">hello@co2audit.com</a>
+    <div class="">
+      <a href="mailto:hello@co2audit.com">hello@co2audit.com</a>
     </div>
   </div>
 </template>

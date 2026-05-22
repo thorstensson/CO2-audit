@@ -10,7 +10,7 @@
     <OHero
       heading="How it works"
       highlight="under the hood."
-      description="A breakdown of the stack and pipeline that runs every scan."
+      description="A breakdown of the stack and pipeline that runs a CO₂ Audit."
     />
 
     <!-- Main wrapper provides broad horizontal padding -->
@@ -41,22 +41,22 @@
           </h3>
           <p>
             Puppeteer launches a headless Chromium instance on the server, loads
-            the page like a real user, and captures the network response as it
-            arrives. The code measures the actual byte sizes from those response
-            buffers and chops them into HTML, CSS, JavaScript, images, fonts,
-            and other assets.
+            the page like a real user, lets call him Bob, and captures the
+            network response as it arrives. The code measures the actual byte
+            sizes from those response buffers and chops them into HTML, CSS,
+            JavaScript, images, fonts, and other assets.
           </p>
 
           <h3 class="font-heading text-h3 text-acc2 mt-4 font-bold">
             Supabase
           </h3>
           <p>
-            I store audit history and page metrics in the Supabase PostgreSQL.
-            This way, if you're logged in, you can check out your past searches
-            and compare. (I promise here that more functionality will ship to
-            motivate this login feature.) Access is secured through Row Level
-            Security (RLS), while heavier calculations are cached to avoid
-            rerunning expensive browser analyses.
+            I store audit history and page metrics in a Supabase PostgreSQL
+            database. This way, if you're logged in, you can check out your past
+            website scans. (More functionality will ship to motivate this login
+            feature.) Access is secured through Row Level Security (RLS), while
+            heavier calculations are cached to avoid flushing the server with
+            calls.
           </p>
         </div>
 
@@ -101,11 +101,10 @@
           <h2 class="font-heading text-h2 text-acc2 text-center font-bold">
             What's Baking for V2
           </h2>
-          <p class="text-secondary mb-6">
+          <p class="text-secondary">
             Let's map out the next iteration to make these sustainability
-            insights even more green!
+            insights tangible!
           </p>
-
           <h3 class="font-heading text-h3 text-acc2 mt-4 font-bold">
             Framework Detection
           </h3>
@@ -125,6 +124,11 @@
             recommendations tailored to how the site actually works, instead of
             relying on generic performance advice.
           </p>
+
+          <h3 class="font-heading text-h3 text-acc2 mt-4 font-bold">
+            Other stuff
+          </h3>
+          <p>Not telling, it's a secret.</p>
         </div>
       </div>
     </section>

@@ -25,34 +25,29 @@
             The Environmental Impact
           </h2>
           <p>
-            I built this app to learn more about CO₂ emissons on the web. I do
-            not pretend to follow best practice, but we all have to start
-            somewhere!
+            I built this app to highlight the impact of CO₂ emissons on the web.
+            I do not pretend to wear green socks, but we all have to start
+            somewhere.
           </p>
           <p>
             The internet isn't invisible; it runs on coal-and-gas-powered data
-            centers that stay turned on 24/7. As AI expands, more of these
-            centers are spreading across the earth each day. Collectively, even
-            seemingly small actions can make big differences to our climate
-            challenges.
+            centers that stay turned on 24/7. The digital ecosystem is
+            responsible for roughly 2.1% to 4% of global greenhouse gas
+            emissions—equivalent to the entire global aviation industry.
           </p>
+
           <p>
-            The digital ecosystem is responsible for roughly 2.1% to 4% of
-            global greenhouse gas emissions. That is equivalent to the entire
-            global aviation industry!
-          </p>
-          <p>
-            Every single megabyte downloaded emits CO₂. Albeit it’s not jet
-            fuel, the outcome is similar: heavy, unoptimized websites with
-            uncompressed images and bloated scripts quietly add to the
-            internet’s growing climate footprint with every page view.
+            Every megabyte downloaded emits CO₂. Heavy, unoptimized websites
+            with uncompressed images and bloated scripts quietly add to the
+            internet’s growing climate footprint with every page view. Invisible
+            jet fuel.
           </p>
           <p>
             Read more at
             <a
               href="https://sustainablewebmanifesto.com"
               target="_blank"
-              class="text-acc2 hover:text-acc2/80 underline underline-offset-2"
+              class="underline underline-offset-2"
               >The Sustainable Web Manifesto</a
             >
           </p>
@@ -66,27 +61,37 @@
             The Business Impact
           </h2>
           <p>
-            Sustainability goes hand-in-hand with web performance. A green
-            website is a fast website.
+            There's a forest, and its's leafy, green, and I walk there picking
+            mushrooms. Still, there's some digital benefits that live on the
+            distant motorway:
           </p>
-          <p>
-            Dropping your page weight doesn't just lower your CO₂ emissions; it
-            slashes loading times.
+          <p class="flex items-start gap-2">
+            <Icon name="glyphs-poly:leaf" class="mt-1 shrink-0" size="1em" />
+            Sustainable websites reduce the energy required to serve every page,
+            lowering the environmental footprint of your digital presence across
+            hosting, data transfer, and user devices.
           </p>
-          <p>
-            Retail giants like Amazon and Google have proven that even a
-            100-millisecond delay in page load speeds can drop user conversion
-            rates by 7% to 10%.
+          <p class="flex items-start gap-2">
+            <Icon name="glyphs-poly:leaf" class="mt-1 shrink-0" size="1em" />
+            Lean, efficient websites load faster, score better in Lighthouse
+            audits, and support stronger SEO performance — improving both user
+            experience and search visibility.
+          </p>
+          <p class="flex items-start gap-2">
+            <Icon name="glyphs-poly:leaf" class="mt-1 shrink-0" size="1em" />
+            Demonstrating environmental responsibility online can strengthen
+            brand trust, helping companies align their digital presence with the
+            values customers, partners, and employees increasingly expect.
           </p>
           <p>
             See
             <a
               href="https://web.dev"
               target="_blank"
-              class="text-acc2 hover:text-acc2/80 underline underline-offset-2"
+              class="underline underline-offset-2"
               >Google's Core Web Vitals Guide</a
             >
-            to learn how search engines rank lightweight, eco-friendly websites
+            to find out more about how search engines rank eco-friendly websites
             higher.
           </p>
         </div>
@@ -99,20 +104,23 @@
             The Accessibility Problem
           </h2>
           <p>
-            Bloated websites punish users who aren't on high-speed fiber
-            networks.
+            It's easy to forget that in many parts of the world, any thing above
+            basic text apps and basic map apps, take forever to load, if at all.
           </p>
           <p>
-            Across parts of Africa where connectivity is slower and mobile data
-            costly, millions of people still rely on older smartphones and 3G/4G
-            connections. For example, in Sub-Saharan Africa, almost two-thirds
+            In many parts of Africa, millions of people still rely on older
+            smartphones and slower mobile networks. Case in point, Ethiopia,
+            where deep rural and agricultural comuninties are accustomed to
+            2G/3G wires. Or consider Sub-Saharan Africa, where almost two-thirds
             of mobile internet users still access the web through 3G devices.
           </p>
           <p>
-            For these users, loading a massive website can mean spending more of
-            their income on data and waiting longer for pages to load. To craft
-            lightweight websites is not just a performance decision — it’s a
-            matter of digital inclusion and accessibility.
+            For these folks, loading a non-optimized website means high data
+            tarrifs and long waits.
+          </p>
+          <p>
+            To craft lightweight websites is not just a performance decision—
+            it’s a matter of digital inclusion and accessibility.
           </p>
         </div>
       </div>
@@ -121,10 +129,10 @@
       <div class="mt-24 grid grid-cols-1 gap-6 md:grid-cols-3">
         <!-- Card 1 -->
         <div
-          class="border-secondary/10 bg-secondary/5 rounded-2xl border p-6 text-center transition-all"
+          class="border-secondary/10 bg-secondary/5 rounded-2xl border p-4 text-center transition-all"
         >
           <div class="mb-4 flex justify-center">
-            <Icon name="glyphs-poly:globe-africa" size="48" />
+            <Icon name="glyphs-poly:globe-africa" size="94" />
           </div>
           <h3 class="font-heading text-h3 text-acc2 mb-2 font-bold">
             The Green Pillar
@@ -136,10 +144,10 @@
 
         <!-- Card 2 -->
         <div
-          class="border-secondary/10 bg-secondary/5 rounded-2xl border p-6 text-center transition-all"
+          class="border-secondary/10 bg-secondary/5 rounded-2xl border p-4 text-center transition-all"
         >
           <div class="mb-4 flex justify-center">
-            <Icon name="glyphs-poly:speedometer-3" size="48" />
+            <Icon name="glyphs-poly:speedometer-3" size="94" />
           </div>
           <h3 class="font-heading text-h3 text-acc2 mb-2 font-bold">
             The Fast Pillar
@@ -151,16 +159,16 @@
 
         <!-- Card 3 -->
         <div
-          class="border-secondary/10 bg-secondary/5 rounded-2xl border p-6 text-center transition-all"
+          class="border-secondary/10 bg-secondary/5 rounded-2xl border p-4 text-center transition-all"
         >
           <div class="mb-4 flex justify-center">
-            <Icon name="glyphs-poly:tree-4" size="48" />
+            <Icon name="glyphs-poly:tree-4" size="94" />
           </div>
           <h3 class="font-heading text-h3 text-acc2 mb-2 font-bold">
             The Fair Pillar
           </h3>
           <p class="text-body text-secondary/90 text-sm leading-relaxed">
-            Make the web accessible to everyone.
+            Make the web accessible.
           </p>
         </div>
       </div>
