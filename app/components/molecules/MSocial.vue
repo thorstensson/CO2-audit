@@ -19,7 +19,7 @@
     </div>
 
     <div>
-      <a href="mailto:someone@example.com">hello@thomasthorstensson.com</a>
+      <a href="mailto:someone@example.com">hello@co2audit.com</a>
     </div>
   </div>
 </template>

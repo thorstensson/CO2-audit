@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { onMounted, onUnmounted } from 'vue'
+  import { onMounted, onUnmounted, watch } from 'vue'
 
   const user = useSupabaseUser()
   const client = useSupabaseClient()
@@ -9,6 +9,7 @@
   let authListener: any = null
 
   async function fetchUserHistory(userId: string) {
+    console.log('fetchUserHistory', userId)
     try {
       const { data: logs, error } = await client
         .from('site_logs')
@@ -26,8 +27,17 @@
           url: log.url,
           co2Grams: log.co2_grams,
           sustainabilityIndex: '—',
-          breakdown: JSON.parse(log.breakdown_bytes || '{}'),
+          breakdown:
+            typeof log.breakdown_bytes === 'string'
+              ? JSON.parse(log.breakdown_bytes)
+              : log.breakdown_bytes || {},
         }))
+
+        console.log(
+          'index, scanHistory',
+          selectedIndex.value,
+          scanHistory.value
+        )
 
         // Show the latest scan (index 0)
         selectedIndex.value = 0
@@ -48,6 +58,7 @@
   }
 
   onMounted(async () => {
+    console.log('user check', user.value?.id)
     // 1. Immediately fetch history if already authenticated (covers post-redirect timing)
     if (user.value?.id) {
       fetchUserHistory(user.value.id)
@@ -60,6 +71,13 @@
       }
     })
     authListener = data.subscription
+
+    // 3. Reactive fallback: catches late-resolving session (cookie→user timing)
+    watch(user, (newUser) => {
+      if (newUser?.id) {
+        fetchUserHistory(newUser.id)
+      }
+    })
 
     // 2. FALLBACK GUEST ROUTE: Processes pending guest scans
     const savedSession = localStorage.getItem('pending_scan_history')

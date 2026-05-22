@@ -1,9 +1,6 @@
 <script setup lang="ts">
   import { ref, watch } from 'vue'
 
-  // Persists across component remounts within the same session
-  let dismissed = false
-
   // Nuxt Supabase core hooks
   const client = useSupabaseClient()
   const user = useSupabaseUser()
@@ -14,14 +11,9 @@
   const isSaving = ref(false)
   const saveSuccess = ref(false)
 
-  // Auto-dismiss after 15s, never show again
+  // Auto-dismiss after 15s
   watch(showSavePrompt, (val) => {
     if (val) {
-      if (dismissed) {
-        showSavePrompt.value = false
-        return
-      }
-      dismissed = true
       setTimeout(() => {
         showSavePrompt.value = false
       }, 15000)
@@ -77,15 +69,15 @@
 <template>
   <div
     v-if="showSavePrompt"
-    class="border-secondary/10 bg-secondary/5 fixed right-8 bottom-8 z-50 flex max-w-md min-w-[340px] flex-col gap-3 rounded-xl border p-4 shadow-lg backdrop-blur-md transition-all duration-300 sm:flex-row sm:items-center print:hidden"
+    class="border-secondary/10 bg-secondary/40 fixed right-8 bottom-8 z-50 flex max-w-md min-w-[340px] flex-col gap-3 rounded-xl border p-4 shadow-lg backdrop-blur-md transition-all duration-300 sm:flex-row sm:items-center print:hidden"
   >
     <div class="grid grid-cols-1 text-center sm:text-left">
       <div
         :class="saveSuccess ? 'visible' : 'invisible'"
         class="col-start-1 row-start-1"
       >
-        <p class="text-acc2 text-sm font-semibold">Metrics synchronized!</p>
-        <p class="text-acc2 mt-0.5 text-xs">
+        <p class="text-primary text-sm font-semibold">Metrics synchronized!</p>
+        <p class="text-primary mt-0.5 text-xs">
           Successfully saved to your dashboard analytics history.
         </p>
       </div>
@@ -94,10 +86,10 @@
         :class="saveSuccess ? 'invisible' : 'visible'"
         class="col-start-1 row-start-1"
       >
-        <p class="text-acc2 text-base font-semibold">
+        <p class="text-primary text-base font-semibold">
           Want to save this CO₂ score?
         </p>
-        <p class="text-acc2 mt-0.5 text-sm">
+        <p class="text-primary mt-0.5 text-sm">
           {{
             user
               ? 'Add this result to your account profile.'

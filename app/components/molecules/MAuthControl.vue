@@ -10,12 +10,7 @@
 
   async function handleLogout() {
     await supabase.auth.signOut()
-
-    // Wait for auth state propagation
-    await supabase.auth.getSession()
-
-    // Hard refresh removes stale hydrated state
-    window.location.href = '/'
+    await navigateTo('/')
   }
 </script>
 

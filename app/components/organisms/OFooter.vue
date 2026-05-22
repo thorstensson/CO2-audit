@@ -42,7 +42,7 @@
       <!-- COLUMN 1: About & Cookie Disclosure -->
       <!-- Added md:max-w-[300px] to keep paragraphs looking nice -->
       <div class="flex flex-col gap-2 text-left text-xs md:max-w-[300px]">
-        <h3 class="font-heading text-sm font-semibold">CO₂ Audit</h3>
+        <h3 class="font-heading text-md font-semibold">CO₂ Audit</h3>
         <p>© 2026 Thomas James Thorstensson</p>
         <a
           href="https://www.thomasthorstensson.com"

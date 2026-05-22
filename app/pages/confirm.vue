@@ -1,21 +1,15 @@
 <script setup lang="ts">
-  const route = useRoute()
-  const supabase = useSupabaseClient()
+  const user = useSupabaseUser()
 
-  onMounted(() => {
-    const code = route.query.code
-
-    if (!code || Array.isArray(code) || typeof code !== 'string') {
-      navigateTo('/')
-      return
-    }
-
-    supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_IN' && session) {
-        setTimeout(() => navigateTo('/', { replace: true }), 1000)
+  watch(
+    user,
+    () => {
+      if (user.value) {
+        return navigateTo('/')
       }
-    })
-  })
+    },
+    { immediate: true }
+  )
 </script>
 
 <template>

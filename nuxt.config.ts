@@ -116,7 +116,7 @@ export default defineNuxtConfig({
   },
   supabase: {
     url: 'https://kbipxdxanwivfoneveuh.supabase.co',
-    useSsrCookies: true, // Explicitly declare to ensure Nitro engine processes it
+    useSsrCookies: false, // Explicitly declare to ensure Nitro engine processes it
 
     // ========================================================================
     // FORCE BYPASS: Disable the module's automatic fallback CSP injection
