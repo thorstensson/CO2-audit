@@ -34,7 +34,7 @@
           LOGOUT
         </button>
       </template>
-      <template #fallback>
+      <template v-else>
         <NuxtLink
           to="/login"
           class="font-heading text-acc1 hover:text-acc1/80 text-sm font-semibold tracking-widest transition-colors duration-300"
@@ -64,7 +64,7 @@
           LOGOUT
         </button>
       </template>
-      <template #fallback>
+      <template v-else>
         <NuxtLink
           to="/login"
           class="font-heading text-2xl font-semibold tracking-widest text-green-600 transition-colors duration-300 hover:text-green-700"
