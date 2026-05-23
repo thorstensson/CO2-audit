@@ -41,13 +41,13 @@
               <li
                 v-for="item in navItems"
                 :key="item"
-                class="font-heading text-secondary hover:text-secondary/80 cursor-pointer text-sm font-semibold tracking-widest transition-colors duration-300"
+                class="font-heading text-secondary hover:text-secondary/80 cursor-pointer text-sm font-medium tracking-widest transition-colors duration-300"
               >
                 <NuxtLink
                   v-if="item === 'WHY'"
                   to="/why"
                   :class="
-                    activeRoute === '/why' ? 'text-acc2' : 'text-secondary'
+                    activeRoute === '/why' ? 'text-acc1' : 'text-secondary'
                   "
                   class="hover:text-secondary/80 transition-colors duration-300"
                 >
@@ -57,7 +57,7 @@
                   v-else-if="item === 'HOW'"
                   to="/how"
                   :class="
-                    activeRoute === '/how' ? 'text-acc2' : 'text-secondary'
+                    activeRoute === '/how' ? 'text-acc1' : 'text-secondary'
                   "
                   class="hover:text-secondary/80 transition-colors duration-300"
                 >
@@ -83,7 +83,7 @@
           <button
             @click="toggle"
             :aria-expanded="isOpen"
-            class="font-heading text-secondary hover:text-secondary/80 text-sm font-semibold tracking-widest transition-colors duration-300"
+            class="font-heading text-secondary hover:text-secondary/80 text-sm font-medium tracking-widest transition-colors duration-300"
           >
             {{ isOpen ? 'CLOSE' : 'MENU' }}
           </button>
@@ -100,12 +100,12 @@
         <li
           v-for="item in navItems"
           :key="item"
-          class="font-heading text-secondary hover:text-secondary/80 cursor-pointer text-5xl font-semibold tracking-widest transition-colors duration-300"
+          class="font-heading text-secondary hover:text-secondary/80 cursor-pointer text-5xl font-medium tracking-widest transition-colors duration-300"
         >
           <NuxtLink
             v-if="item === 'WHY'"
             to="/why"
-            :class="activeRoute === '/why' ? 'text-acc2' : 'text-secondary'"
+            :class="activeRoute === '/why' ? 'text-acc1' : 'text-secondary'"
             class="hover:text-secondary/80 transition-colors duration-300"
             @click="isOpen = false"
           >
@@ -115,7 +115,7 @@
             v-else-if="item === 'HOW'"
             to="/how"
             b
-            :class="activeRoute === '/how' ? 'text-acc2' : 'text-secondary'"
+            :class="activeRoute === '/how' ? 'text-acc1' : 'text-secondary'"
             class="hover:text-secondary/80 transition-colors duration-300"
             @click="isOpen = false"
           >

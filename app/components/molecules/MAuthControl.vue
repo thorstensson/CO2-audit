@@ -37,7 +37,7 @@
       <template v-else>
         <NuxtLink
           to="/login"
-          class="font-heading text-acc2 hover:text-acc2/80 text-sm font-semibold tracking-widest transition-colors duration-300"
+          class="font-heading text-acc1 hover:text-acc1/80 text-sm font-medium tracking-widest transition-colors duration-300"
         >
           LOGIN
         </NuxtLink>
@@ -67,7 +67,7 @@
       <template v-else>
         <NuxtLink
           to="/login"
-          class="font-heading text-acc2 hover:text-acc2/80 text-2xl font-semibold tracking-widest transition-colors duration-300"
+          class="font-heading text-acc1 hover:text-acc1/80 text-2xl font-medium tracking-widest transition-colors duration-300"
         >
           LOGIN
         </NuxtLink>
