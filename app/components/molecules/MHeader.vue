@@ -4,6 +4,6 @@
 
 <template>
   <NuxtLink to="/" class="flex items-center" title="HOME">
-    <Logo class="h-8 w-auto" />
+    <Logo class="h-6 w-auto" />
   </NuxtLink>
 </template>

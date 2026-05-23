@@ -7,11 +7,7 @@
 </script>
 <template>
   <main>
-    <OHero
-      heading="How it works"
-      highlight="under the hood."
-      description="A breakdown of the stack and pipeline that runs a CO₂ Audit."
-    />
+    <OHero heading="How it works" highlight="under the hood." description="" />
 
     <!-- Main wrapper provides broad horizontal padding -->
     <section class="mx-auto mt-16 max-w-5xl px-4 pb-24 md:px-6">
@@ -21,11 +17,11 @@
         <div
           class="text-body text-secondary mb-16 flex flex-col gap-4 leading-relaxed"
         >
-          <h2 class="font-heading text-h2 text-acc2 text-center font-bold">
+          <h2 class="font-heading text-h1 text-acc2 text-center font-bold">
             The Creative Stack
           </h2>
 
-          <h3 class="font-heading text-h3 text-acc2 mt-4 font-bold">Nuxt 4</h3>
+          <h2 class="font-heading text-h2 text-acc2 mt-4 font-bold">Nuxt 4</h2>
           <p>
             My favourite progressive meta-framework handles the reactive
             frontend and layout. Nuxt's Nitro server runs (<code
@@ -36,9 +32,9 @@
             (I need a dictinonary for SSR).
           </p>
 
-          <h3 class="font-heading text-h3 text-acc2 mt-4 font-bold">
+          <h2 class="font-heading text-h2 text-acc2 mt-4 font-bold">
             Puppeteer
-          </h3>
+          </h2>
           <p>
             Puppeteer launches a headless Chromium instance on the server, loads
             the page like a real user, lets call him Bob, and captures the
@@ -47,9 +43,9 @@
             JavaScript, images, fonts, and other assets.
           </p>
 
-          <h3 class="font-heading text-h3 text-acc2 mt-4 font-bold">
+          <h2 class="font-heading text-h2 text-acc2 mt-4 font-bold">
             Supabase
-          </h3>
+          </h2>
           <p>
             I store audit history and page metrics in a Supabase PostgreSQL
             database. This way, if you're logged in, you can check out your past
@@ -64,7 +60,7 @@
         <div
           class="text-body text-secondary mb-16 flex flex-col gap-4 leading-relaxed"
         >
-          <h2 class="font-heading text-h2 text-acc2 text-center font-bold">
+          <h2 class="font-heading text-h1 text-acc2 text-center font-bold">
             The Carbon Calculation Pipeline
           </h2>
 
@@ -98,25 +94,25 @@
         <div
           class="text-body text-secondary mt-24 flex flex-col gap-4 border-t border-green-100 pt-16 leading-relaxed"
         >
-          <h2 class="font-heading text-h2 text-acc2 text-center font-bold">
+          <h2 class="font-heading text-h1 text-acc2 text-center font-bold">
             What's Baking for V2
           </h2>
           <p class="text-secondary">
             Let's map out the next iteration to make these sustainability
             insights tangible!
           </p>
-          <h3 class="font-heading text-h3 text-acc2 mt-4 font-bold">
+          <h2 class="font-heading text-h2 text-acc2 mt-4 font-bold">
             Framework Detection
-          </h3>
+          </h2>
           <p>
             The auditor will sniff out if a site is running on Nuxt, Next.js,
             WordPress, or vanilla code. Instead of generic advice, you will get
             optimizations feedback for your <i>creative stack.</i>
           </p>
 
-          <h3 class="font-heading text-h3 text-acc2 mt-4 font-bold">
+          <h2 class="font-heading text-h2 text-acc2 mt-4 font-bold">
             SSR vs. SPA Analysis
-          </h3>
+          </h2>
           <p>
             By inspecting the page’s initial server response, we can tell
             whether a site is rendered on the server or assembled later in the
@@ -125,9 +121,9 @@
             relying on generic performance advice.
           </p>
 
-          <h3 class="font-heading text-h3 text-acc2 mt-4 font-bold">
+          <h2 class="font-heading text-h2 text-acc2 mt-4 font-bold">
             Other stuff
-          </h3>
+          </h2>
           <p>Not telling, it's a secret.</p>
         </div>
       </div>

@@ -15,16 +15,16 @@
 
     /* Core palette */
     --color-primary: #1c2121;
-    --color-primary-100: #3C2D33;
-    --color-primary-200: #635157;
-    --color-primary-300: #928387;
-    --color-primary-400: #BBB4B7;
+    --color-primary-100: #999B9B;
+    --color-primary-200: #6B6F6F;
+    --color-primary-300: #454949;
+    --color-primary-400: #2E3333;
 
     --color-secondary: #F0F4F9;
-    --color-secondary-100: #DDD5D8;
-    --color-secondary-200: #B8B2B4;
-    --color-secondary-300: #7B7778;
-    --color-secondary-400: #3D3B3C;
+    --color-secondary-100: #E4E8ED;
+    --color-secondary-200: #C5C8CC;
+    --color-secondary-300: #9C9FA2;
+    --color-secondary-400: #6C6E70;
 
     /* Eco accent */
     --color-acc1: #9AE19D;

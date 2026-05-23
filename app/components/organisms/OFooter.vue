@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { ref } from 'vue'
-  import HeartbeatIcon from '@iconify-vue/glyphs-poly/heartbeat'
+  import Logo from '@/assets/svg/logo.svg'
 
   const client = useSupabaseClient()
   const scanCount = ref(0)
@@ -34,7 +34,9 @@
 </script>
 
 <template>
-  <footer class="bg-acc1/90 text-primary mt-20 p-8 text-xs print:hidden">
+  <footer
+    class="bg-primary-400 text-secondary-200 mt-20 p-12 text-xs print:hidden"
+  >
     <!-- Changed from grid to flex with justify-between -->
     <div
       class="mx-auto flex w-full max-w-6xl flex-col gap-8 md:flex-row md:justify-between"
@@ -42,31 +44,31 @@
       <!-- COLUMN 1: About & Cookie Disclosure -->
       <!-- Added md:max-w-[300px] to keep paragraphs looking nice -->
       <div
-        class="flex flex-col gap-2 text-left text-xs md:max-w-[300px] md:text-sm"
+        class="flex flex-col items-start gap-2 text-left md:max-w-[300px] md:text-sm"
       >
-        <h3 class="font-heading text-lg font-semibold">CO₂ Audit</h3>
+        <Logo class="mb-4 h-8 w-auto" />
         <a
           class="hover:text-primary/60 underline underline-offset-2 transition-colors"
           href="mailto:hello@co2audit.com"
           >hello@co2audit.com</a
         >
+        <p class="mt-1 leading-relaxed">
+          This site uses only necessary cookies.<br class="md:hidden" />
+          No tracking or analytics!
+        </p>
         <a
           href="https://www.thomasthorstensson.com"
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="Portfolio (opens in new tab)"
-          class="hover:text-primary/60 underline underline-offset-2 transition-colors"
-          >www.thomasthorstensson.com</a
+          class="hover:text-secondary text-acc3 transition"
         >
-        <p class="mt-1 leading-relaxed">
-          This site uses only strictly necessary cookies to keep you logged in.
-          No tracking or analytics are used.
-        </p>
+          Made by Thomas Thorstensson
+        </a>
       </div>
 
       <!-- COLUMN 2: Learning Resources -->
       <div class="flex flex-col gap-2 text-left text-xs md:text-sm">
-        <h3 class="font-heading text-lg font-semibold">Learning Resources</h3>
+        <h3 class="font-heading text-lg">Learning</h3>
         <a
           href="https://thegreenwebfoundation.org"
           target="_blank"
@@ -102,10 +104,9 @@
       </div>
 
       <!-- COLUMN 3: Status / Contact -->
-      <div class="flex flex-col gap-2 text-left text-xs md:text-sm">
-        <h3 class="font-heading text-lg font-semibold">Mode</h3>
+      <div class="flex flex-col gap-2 text-left text-xs">
+        <h3 class="font-heading text-lg">Stack</h3>
         <div class="flex items-center">
-          <HeartbeatIcon height="2.4em" />
           <span>Nuxt 4 / Puppeteer</span>
         </div>
         <p>
@@ -119,10 +120,8 @@
             >Supabase</a
           >
         </p>
-        <p v-if="scanCount > 0" class="text-primary">
-          {{ scanCount }} {{ scanCount === 1 ? 'site' : 'sites' }} in database
-        </p>
-        <p class="text-primary">MVP. More features ahead!</p>
+        <p>Hosted on Vercel.</p>
+        <p>MVP.</p>
       </div>
     </div>
   </footer>

@@ -21,26 +21,24 @@
         <div
           class="text-body text-secondary mb-16 flex flex-col gap-4 leading-relaxed"
         >
-          <h2 class="font-heading text-h2 text-acc2 text-center font-bold">
+          <h2 class="font-heading text-h1 text-acc2 text-center font-bold">
             The Environmental Impact
           </h2>
           <p>
-            I built this app to highlight the impact of CO₂ emissons on the web.
-            I do not pretend to wear green socks, but we all have to start
-            somewhere.
+            I built this app to highlight the impact of CO₂ emissions on the
+            web. I do not pretend to always wear green socks, but we all have to
+            start somewhere.
           </p>
           <p>
-            The internet isn't invisible; it runs on coal-and-gas-powered data
-            centers that stay turned on 24/7. The digital ecosystem is
-            responsible for roughly 2.1% to 4% of global greenhouse gas
-            emissions—equivalent to the entire global aviation industry.
+            The internet isn't invisible; it runs on data centres that stay
+            turned on 24/7. The digital world produces 2.1% to 4% of global
+            greenhouse gas emissions—as much as the entire aviation industry.
           </p>
 
           <p>
             Every megabyte downloaded emits CO₂. Heavy, unoptimized websites
-            with uncompressed images and bloated scripts quietly add to the
-            internet’s growing climate footprint with every page view. Invisible
-            jet fuel.
+            with uncompressed images and scripts add to the internet’s growing
+            climate footprint with every page view. Invisible jet fuel.
           </p>
           <p>
             Read more at
@@ -57,31 +55,28 @@
         <div
           class="text-body text-secondary mb-16 flex flex-col gap-4 leading-relaxed"
         >
-          <h2 class="font-heading text-h2 text-acc2 text-center font-bold">
+          <h2 class="font-heading text-h1 text-acc2 text-center font-bold">
             The Business Impact
           </h2>
           <p>
-            There's a forest, and its's leafy, green, and I walk there picking
-            mushrooms. Still, there's some digital benefits that live on the
-            distant motorway:
+            There's a forest, and I walk there picking mushrooms. Still, there
+            are some digital benefits to consider beyond the trees:
           </p>
           <p class="flex items-start gap-2">
             <Icon name="glyphs-poly:leaf" class="mt-1 shrink-0" size="1em" />
-            Sustainable websites reduce the energy required to serve every page,
-            lowering the environmental footprint of your digital presence across
-            hosting, data transfer, and user devices.
+            Sustainable websites reduce the energy required to serve every page.
+            This lowers the environmental footprint across hosting, data
+            transfer, and devices.
           </p>
           <p class="flex items-start gap-2">
             <Icon name="glyphs-poly:leaf" class="mt-1 shrink-0" size="1em" />
-            Lean, efficient websites load faster, score better in Lighthouse
-            audits, and support stronger SEO performance — improving both user
-            experience and search visibility.
+            Lean websites load faster and thus score better in Lighthouse
+            audits, meaning stronger SEO performance.
           </p>
           <p class="flex items-start gap-2">
             <Icon name="glyphs-poly:leaf" class="mt-1 shrink-0" size="1em" />
-            Demonstrating environmental responsibility online can strengthen
-            brand trust, helping companies align their digital presence with the
-            values customers, partners, and employees increasingly expect.
+            Demonstrating environmental awareness strengthens brand trust and
+            involves people in something greater than commercial algorithms.
           </p>
           <p>
             See
@@ -100,27 +95,23 @@
         <div
           class="text-body text-secondary mb-16 flex flex-col gap-4 leading-relaxed"
         >
-          <h2 class="font-heading text-h2 text-acc2 text-center font-bold">
+          <h2 class="font-heading text-h1 text-acc2 text-center font-bold">
             The Accessibility Problem
           </h2>
           <p>
-            It's easy to forget that in many parts of the world, any thing above
-            basic text apps and basic map apps, take forever to load, if at all.
-          </p>
-          <p>
-            In many parts of Africa, millions of people still rely on older
-            smartphones and slower mobile networks. Case in point, Ethiopia,
-            where deep rural and agricultural comuninties are accustomed to
-            2G/3G wires. Or consider Sub-Saharan Africa, where almost two-thirds
-            of mobile internet users still access the web through 3G devices.
+            In many parts of Africa, millions of people still rely on slow
+            mobile networks. Case in point, Ethiopia, where deep rural and
+            agricultural communities are accustomed to 2G/3G wires. Or consider
+            Sub-Saharan Africa, where almost two-thirds of mobile internet users
+            still access the web through 3G devices.
           </p>
           <p>
             For these folks, loading a non-optimized website means high data
-            tarrifs and long waits.
+            tariffs and waiting for pages that might never load.
           </p>
           <p>
-            To craft lightweight websites is not just a performance decision—
-            it’s a matter of digital inclusion and accessibility.
+            To craft lightweight websites is not just a performance decision —
+            it's a matter of digital inclusion and accessibility.
           </p>
         </div>
       </div>

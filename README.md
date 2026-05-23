@@ -10,25 +10,25 @@ Sustainability and performance go hand-in-hand. Lighter pages mean lower emissio
 
 ## 🍃 What it does
 
-Co2Audit runs Lighthouse audits via Puppeteer, extracts performance metrics, and calculates estimated CO₂ emissions per page visit using the [Sustainable Web Design (SWD)](https://www.thegreenwebfoundation.org/) model. Goose.
+Co2Audit runs Lighthouse audits via Puppeteer, extracts performance metrics, and calculates estimated CO₂ emissions per page visit using the [Sustainable Web Design (SWD)](https://www.thegreenwebfoundation.org/) model.
 
-## ✅ Status
+## Status
 
 **v1 live** — [co2audit.app](https://co2audit.app) 🚀
 
-## 🛠️ Setup
+## Setup
 
 ```bash
 pnpm install
 ```
 
-## 🧪 Development
+## Development
 
 ```bash
 pnpm dev
 ```
 
-## 📦 Build
+## Build
 
 ```bash
 pnpm build

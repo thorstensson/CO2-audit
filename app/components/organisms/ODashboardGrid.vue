@@ -1,10 +1,52 @@
 <script setup lang="ts">
-  import { computed } from 'vue'
+  import { computed, ref } from 'vue'
   import TreeIcon from '@iconify-vue/glyphs-poly/tree'
   import CarSideIcon from '@iconify-vue/glyphs-poly/car-side'
   import AnalyticsIcon from '@iconify-vue/glyphs-poly/analytics'
 
   const handlePrint = () => window.print()
+
+  const supabase = useSupabaseClient()
+  const user = useSupabaseUser()
+
+  const viewMode = ref<'perView' | 'annual'>('perView')
+  const annualViews = ref(10000)
+  const multiplier = computed(() =>
+    viewMode.value === 'annual' ? annualViews.value : 1
+  )
+
+  const handleDelete = async () => {
+    console.log('DELETE', scan.value.url, user.value?.sub)
+    if (!scan.value?.url || !user.value?.sub) return
+
+    try {
+      const { error } = await supabase
+        .from('site_logs')
+        .delete()
+        .eq('user_id', user.value.sub) // Changed to sub
+        .eq('url', scan.value.url)
+        .eq('co2_grams', scan.value.co2Grams)
+
+      if (error) throw error
+
+      // Remove from local state instantly
+      const idx = selectedIndex.value
+      scanHistory.value = scanHistory.value.filter((_, i) => i !== idx)
+
+      // If no scans left, reset to empty state
+      if (scanHistory.value.length === 0) {
+        lastScanData.value = null
+      }
+
+      // Adjust index if we deleted the last item
+      if (selectedIndex.value >= scanHistory.value.length) {
+        selectedIndex.value = scanHistory.value.length - 1
+      }
+    } catch (error) {
+      console.error('Failed to delete:', error)
+      alert('Oops! Could not delete that scan. Please try again.')
+    }
+  }
 
   // Fetch your global scan state array handlers natively
   const {
@@ -12,6 +54,7 @@
     isScanning,
     scanHistory,
     selectedIndex,
+    lastScanData,
     goToPrev,
     goToNext,
   } = useScanState()
@@ -154,28 +197,57 @@
 
 <template>
   <div class="mx-auto max-w-screen-2xl px-6 py-12">
-    <!-- Pagination controls -->
+    <!-- Toolbar: navigation left, actions right -->
     <div
-      v-if="scanHistory.length > 1"
-      class="mb-6 flex items-center justify-center gap-4 print:hidden"
+      v-if="showDashboard"
+      class="bg-primary border-primary-200 mb-6 flex flex-col items-center justify-between gap-2 rounded-2xl border px-4 py-2 shadow-sm sm:flex-row print:hidden"
     >
-      <button
-        :disabled="selectedIndex <= 0"
-        class="font-heading text-secondary/60 hover:text-secondary text-h3 cursor-pointer font-semibold tracking-widest transition disabled:opacity-30"
-        @click="goToPrev"
-      >
-        ← Prev
-      </button>
-      <span class="text-secondary/40 text-h3 font-mono"
-        >{{ selectedIndex + 1 }} / {{ scanHistory.length }}</span
-      >
-      <button
-        :disabled="selectedIndex >= scanHistory.length - 1"
-        class="font-heading text-secondary/60 hover:text-secondary text-h3 cursor-pointer font-semibold tracking-widest transition disabled:opacity-30"
-        @click="goToNext"
-      >
-        Next →
-      </button>
+      <!-- Navigation group -->
+      <div v-if="scanHistory.length > 1" class="flex items-center gap-3">
+        <button
+          :disabled="selectedIndex <= 0"
+          class="font-heading text-secondary hover:text-secondary/80 cursor-pointer text-sm font-medium tracking-widest transition disabled:opacity-50"
+          @click="goToPrev"
+        >
+          <span class="inline-flex items-center gap-1"
+            ><Icon name="fa6-solid:angles-left" size="14" />Prev</span
+          >
+        </button>
+        <span class="text-secondary/60 font-mono text-sm"
+          >{{ selectedIndex + 1 }} / {{ scanHistory.length }}</span
+        >
+        <button
+          :disabled="selectedIndex >= scanHistory.length - 1"
+          class="font-heading text-secondary hover:text-secondary/80 cursor-pointer text-sm font-medium tracking-widest transition disabled:opacity-30"
+          @click="goToNext"
+        >
+          <span class="inline-flex items-center gap-1"
+            >Next<Icon name="fa6-solid:angles-right" size="14"
+          /></span>
+        </button>
+      </div>
+
+      <!-- Spacer when nav is hidden but toolbar is shown -->
+      <div v-if="scanHistory.length <= 1" class="hidden sm:block"></div>
+
+      <div class="flex items-center gap-2">
+        <AButton
+          v-if="user"
+          variant="outline"
+          class="text-xs"
+          @click="handleDelete"
+        >
+          <Icon name="fa6-solid:trash" /> Delete
+        </AButton>
+        <AButton
+          variant="outline"
+          class="text-xs"
+          title="Save paper."
+          @click="handlePrint"
+        >
+          <Icon name="fa6-solid:print" /> Print as PDF
+        </AButton>
+      </div>
     </div>
 
     <!-- State view if there are no loaded runs -->
@@ -200,7 +272,7 @@
     <!-- Active Loading Template State -->
     <div
       v-else-if="isScanning"
-      class="bg-primary rounded-2xl border border-gray-100 py-20 text-center shadow-sm"
+      class="bg-primary border-primary-100 rounded-2xl border py-20 text-center shadow-sm"
     >
       <div
         class="mx-auto h-8 w-8 animate-spin rounded-full border-b-2 border-green-600"
@@ -216,10 +288,10 @@
       class="grid grid-cols-1 gap-8 lg:grid-cols-3 print:break-before-page"
     >
       <div
-        class="bg-primary overflow-hidden rounded-2xl border border-gray-100 shadow-sm lg:col-span-2"
+        class="bg-primary border-primary-100 overflow-hidden rounded-2xl border shadow-sm lg:col-span-2"
       >
         <div
-          class="flex items-center justify-between border-b border-gray-100 px-6 py-5"
+          class="border-primary-100 flex items-center justify-between border-b px-6 py-5"
         >
           <div>
             <h3 class="text-h3 text-acc2 font-bold">Carbon Asset Breakdown</h3>
@@ -232,7 +304,7 @@
           </div>
         </div>
 
-        <div class="divide-y divide-gray-100">
+        <div class="divide-primary-100 divide-y">
           <div
             v-for="item in footprintBreakdown"
             :key="item.name"
@@ -260,7 +332,7 @@
       <div class="space-y-6">
         <!-- Grade/Rating Segment -->
         <div
-          class="bg-primary flex flex-col justify-between rounded-2xl border border-gray-100 p-6 shadow-sm"
+          class="bg-primary border-primary-100 flex flex-col justify-between rounded-2xl border p-6 shadow-sm"
         >
           <div>
             <h4 class="text-acc2 text-h3 font-bold">Sustainability Index</h4>
@@ -277,8 +349,10 @@
                 <p class="text-base font-bold">{{ ratingScale?.label }}</p>
                 <p class="text-base">
                   Produces
-                  <span class="font-semibold">{{ scan?.co2Grams }}g</span> CO₂
-                  per view.
+                  <span class="font-semibold"
+                    >{{ (scan?.co2Grams * multiplier).toFixed(4) }}g</span
+                  >
+                  CO₂ {{ viewMode === 'annual' ? 'per year' : 'per view' }}.
                 </p>
               </div>
             </div>
@@ -289,14 +363,14 @@
         <div class="text-primary mt-4 space-y-3 text-sm">
           <!-- Fossil Car Travel Distance -->
           <div class="flex items-center gap-3 rounded-xl bg-green-50 p-2">
-            <CarSideIcon height="4em" />
+            <Icon name="glyphs-poly:car-side" size="48" />
             <div>
               <p class="font-mono font-semibold">
                 {{
                   scan?.co2Grams
-                    ? scan.co2Grams / 0.12 >= 1000
-                      ? (scan.co2Grams / 120).toFixed(2) + ' km'
-                      : (scan.co2Grams / 0.12).toFixed(1) + ' m'
+                    ? (scan.co2Grams * multiplier) / 0.12 >= 1000
+                      ? ((scan.co2Grams * multiplier) / 120).toFixed(2) + ' km'
+                      : ((scan.co2Grams * multiplier) / 0.12).toFixed(1) + ' m'
                     : '0.0 m'
                 }}
               </p>
@@ -306,14 +380,16 @@
 
           <!-- Tree Absorption Duration -->
           <div class="flex items-center gap-3 rounded-xl bg-green-50 p-2">
-            <TreeIcon height="4em" />
+            <Icon name="glyphs-poly:tree" size="48" />
             <div>
               <p class="font-mono font-semibold">
                 {{
                   scan?.co2Grams
-                    ? scan.co2Grams / 0.04185 >= 60
-                      ? (scan.co2Grams / 2.511).toFixed(1) + ' hours'
-                      : (scan.co2Grams / 0.04185).toFixed(1) + ' mins'
+                    ? (scan.co2Grams * multiplier) / 0.04185 >= 60
+                      ? ((scan.co2Grams * multiplier) / 2.511).toFixed(1) +
+                        ' hours'
+                      : ((scan.co2Grams * multiplier) / 0.04185).toFixed(1) +
+                        ' mins'
                     : '0.0 mins'
                 }}
               </p>
@@ -321,29 +397,63 @@
             </div>
           </div>
 
-          <!-- Coffee Footprint Equivalent -->
+          <!-- LED Bulb Equivalent -->
           <div class="flex items-center gap-3 rounded-xl bg-green-50 p-2">
-            <Icon
-              name="streamline-plump-color:coffee-mug-flat"
-              size="48"
-              class="shrink-0"
-            />
+            <Icon name="glyphs-poly:lightbulb-2" size="48" class="shrink-0" />
             <div>
               <p class="font-mono font-semibold">
                 {{
                   scan?.co2Grams
-                    ? scan.co2Grams >= 250
-                      ? (scan.co2Grams / 250).toFixed(1) + ' cups'
-                      : ((scan.co2Grams / 250) * 100).toFixed(1) + '% of a cup'
-                    : '0.0%'
+                    ? (scan.co2Grams * multiplier) / 4 >= 1
+                      ? ((scan.co2Grams * multiplier) / 4).toFixed(1) + ' hours'
+                      : ((scan.co2Grams * multiplier) / 0.0667).toFixed(1) +
+                        ' mins'
+                    : '0 mins'
                 }}
               </p>
-              <p>Equal to the footprint of brewing this much coffee.</p>
+              <p>10W LED bulb powered for this duration.</p>
             </div>
           </div>
-          <p class="text-secondary/60 text-xs italic">
-            No inflated or multiplied values. Based on one time measurement.
-          </p>
+          <div class="mt-4 flex flex-wrap items-center gap-2 sm:gap-3">
+            <div class="flex rounded-lg border border-gray-200 p-0.5">
+              <button
+                class="rounded-md px-3 py-1 text-xs font-medium transition"
+                :class="
+                  viewMode === 'perView'
+                    ? 'bg-acc1 text-primary'
+                    : 'text-secondary/60 hover:text-secondary'
+                "
+                @click="viewMode = 'perView'"
+              >
+                Per View
+              </button>
+              <button
+                class="rounded-md px-3 py-1 text-xs font-medium transition"
+                :class="
+                  viewMode === 'annual'
+                    ? 'bg-acc1 text-primary'
+                    : 'text-secondary/60 hover:text-secondary'
+                "
+                @click="viewMode = 'annual'"
+              >
+                Annual
+              </button>
+            </div>
+            <input
+              v-if="viewMode === 'annual'"
+              v-model.number="annualViews"
+              type="number"
+              min="1"
+              class="w-20 border-0 bg-transparent px-1 py-1 text-xs outline-none"
+              placeholder="Views"
+            />
+            <span
+              v-if="viewMode === 'annual'"
+              class="text-secondary text-xs whitespace-nowrap"
+            >
+              Based on {{ annualViews.toLocaleString() }} page views / year
+            </span>
+          </div>
         </div>
       </div>
     </div>
@@ -354,8 +464,6 @@
       Made by Thomas | www.thomasthorstensson.com
     </div>
 
-    <div v-if="showDashboard" class="mt-8 flex justify-center print:hidden">
-      <AButton variant="outline" label="Print as PDF" @click="handlePrint" />
-    </div>
+    <!-- @standalone-print (removed — moved to toolbar above) -->
   </div>
 </template>

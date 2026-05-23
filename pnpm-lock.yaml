@@ -20,6 +20,9 @@ importers:
       '@iconify-vue/fa6-brands':
         specifier: ^1.0.3
         version: 1.0.3(vue@3.5.34(typescript@6.0.3))
+      '@iconify-vue/fa6-solid':
+        specifier: ^1.0.3
+        version: 1.0.3(vue@3.5.34(typescript@6.0.3))
       '@iconify-vue/glyphs-poly':
         specifier: ^1.0.2
         version: 1.0.2(vue@3.5.34(typescript@6.0.3))
@@ -720,6 +723,9 @@ packages:
 
   '@iconify-vue/fa6-brands@1.0.3':
     resolution: {integrity: sha512-qqO2wkBnf9ui2GO4PfH+1ohQ5L1cjPG5oiw7JN51PjSJaCcxy62FHvjb7BVUtQh0L+PYgnebeHHMRpSnFzHNNg==}
+
+  '@iconify-vue/fa6-solid@1.0.3':
+    resolution: {integrity: sha512-F+PIzhLLjg8Gg1bRmKd4d2xvGEUdcLuxE/ZzrbRMv6JDTQCLeNmUPIV9Kf0WP8+UhvBKYzjvq5kxhvPKsqGy1g==}
 
   '@iconify-vue/glyphs-poly@1.0.2':
     resolution: {integrity: sha512-RXvm0ZknY2U8zMNL9SBO73N4ECukixYbBX4YfAy3aWJH3AzDzP7tIAMs29yFI0B8rpv1dRjZYjLh/Wr+V/ZRkA==}
@@ -7100,6 +7106,12 @@ snapshots:
   '@humanwhocodes/retry@0.4.3': {}
 
   '@iconify-vue/fa6-brands@1.0.3(vue@3.5.34(typescript@6.0.3))':
+    dependencies:
+      '@iconify/css-vue': 1.0.2(vue@3.5.34(typescript@6.0.3))
+    transitivePeerDependencies:
+      - vue
+
+  '@iconify-vue/fa6-solid@1.0.3(vue@3.5.34(typescript@6.0.3))':
     dependencies:
       '@iconify/css-vue': 1.0.2(vue@3.5.34(typescript@6.0.3))
     transitivePeerDependencies:

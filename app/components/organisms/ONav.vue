@@ -47,7 +47,7 @@
                   v-if="item === 'WHY'"
                   to="/why"
                   :class="
-                    activeRoute === '/why' ? 'text-acc1' : 'text-secondary'
+                    activeRoute === '/why' ? 'text-acc2' : 'text-secondary'
                   "
                   class="hover:text-secondary/80 transition-colors duration-300"
                 >
@@ -57,7 +57,7 @@
                   v-else-if="item === 'HOW'"
                   to="/how"
                   :class="
-                    activeRoute === '/how' ? 'text-acc1' : 'text-secondary'
+                    activeRoute === '/how' ? 'text-acc2' : 'text-secondary'
                   "
                   class="hover:text-secondary/80 transition-colors duration-300"
                 >
@@ -105,7 +105,7 @@
           <NuxtLink
             v-if="item === 'WHY'"
             to="/why"
-            :class="activeRoute === '/why' ? 'text-acc1' : 'text-secondary'"
+            :class="activeRoute === '/why' ? 'text-acc2' : 'text-secondary'"
             class="hover:text-secondary/80 transition-colors duration-300"
             @click="isOpen = false"
           >
@@ -115,7 +115,7 @@
             v-else-if="item === 'HOW'"
             to="/how"
             b
-            :class="activeRoute === '/how' ? 'text-acc1' : 'text-secondary'"
+            :class="activeRoute === '/how' ? 'text-acc2' : 'text-secondary'"
             class="hover:text-secondary/80 transition-colors duration-300"
             @click="isOpen = false"
           >

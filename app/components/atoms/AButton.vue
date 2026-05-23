@@ -4,7 +4,7 @@
   const props = withDefaults(
     defineProps<{
       variant?: 'green' | 'outline' | 'accent'
-      label: string
+      label?: string
       to?: string
       disabled?: boolean
       type?: 'button' | 'submit' | 'reset'
@@ -45,7 +45,7 @@
       classes,
     ]"
   >
-    {{ props.label }}
+    <slot>{{ props.label }}</slot>
   </NuxtLink>
 
   <button
@@ -62,6 +62,6 @@
     ]"
     @click="emit('click')"
   >
-    {{ props.label }}
+    <slot>{{ props.label }}</slot>
   </button>
 </template>
