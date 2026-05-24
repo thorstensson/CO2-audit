@@ -62,6 +62,7 @@
         >
           Read more.
         </NuxtLink>
+        Create a free account to save/delete logs to your private record.
       </p>
     </div>
   </section>

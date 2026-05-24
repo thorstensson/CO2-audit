@@ -48,7 +48,7 @@
       >
         <Logo class="mb-4 h-8 w-auto" />
         <a
-          class="hover:text-primary/60 underline underline-offset-2 transition-colors"
+          class="hover:text-secondary underline underline-offset-2 transition-colors"
           href="mailto:hello@co2audit.com"
           >hello@co2audit.com</a
         >
@@ -60,7 +60,7 @@
           href="https://www.thomasthorstensson.com"
           target="_blank"
           rel="noopener noreferrer"
-          class="hover:text-secondary text-acc3 transition"
+          class="hover:text-secondary text-acc1 transition"
         >
           Made by Thomas Thorstensson
         </a>
@@ -74,7 +74,7 @@
           target="_blank"
           rel="noopener noreferrer"
           aria-label="The Green Web Foundation (opens in new tab)"
-          class="hover:text-primary/60 underline underline-offset-2 transition-colors"
+          class="hover:text-secondary underline underline-offset-2 transition-colors"
           >thegreenwebfoundation.org</a
         >
         <a
@@ -82,7 +82,7 @@
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Green Software Foundation (opens in new tab)"
-          class="hover:text-primary/60 underline underline-offset-2 transition-colors"
+          class="hover:text-secondary underline underline-offset-2 transition-colors"
           >Software Carbon Intensity (SCI)</a
         >
         <a
@@ -90,7 +90,7 @@
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Sustainable Web Design (opens in new tab)"
-          class="hover:text-primary/60 underline underline-offset-2 transition-colors"
+          class="hover:text-secondary underline underline-offset-2 transition-colors"
           >sustainablewebdesign.org</a
         >
         <a
@@ -98,7 +98,7 @@
           target="_blank"
           rel="noopener noreferrer"
           aria-label="W3C Web Sustainability Guidelines (opens in new tab)"
-          class="hover:text-primary/60 underline underline-offset-2 transition-colors"
+          class="hover:text-secondary underline underline-offset-2 transition-colors"
           >W3C Web Sustainability Guidelines</a
         >
       </div>
@@ -116,7 +116,7 @@
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Supabase (opens in new tab)"
-            class="hover:text-primary/60 underline underline-offset-2 transition-colors"
+            class="hover:text-secondary underline underline-offset-2 transition-colors"
             >Supabase</a
           >
         </p>

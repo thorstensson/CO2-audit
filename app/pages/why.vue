@@ -59,14 +59,14 @@
             The Business Impact
           </h2>
           <p>
-            There's a forest, and I walk there picking mushrooms. Still, there
-            are some digital benefits to consider beyond the trees:
+            Beyond stable weather patterns and thriving marine ecosystems,
+            minimizing our digital carbon footprint unlocks social and strategic
+            advantages:
           </p>
           <p class="flex items-start gap-2">
             <Icon name="glyphs-poly:leaf" class="mt-1 shrink-0" size="1em" />
-            Sustainable websites reduce the energy required to serve every page.
-            This lowers the environmental footprint across hosting, data
-            transfer, and devices.
+            Cutting digital waste lowers operational cloud costs while expanding
+            access for users on limited data plans
           </p>
           <p class="flex items-start gap-2">
             <Icon name="glyphs-poly:leaf" class="mt-1 shrink-0" size="1em" />
@@ -76,7 +76,8 @@
           <p class="flex items-start gap-2">
             <Icon name="glyphs-poly:leaf" class="mt-1 shrink-0" size="1em" />
             Demonstrating environmental awareness strengthens brand trust and
-            involves people in something greater than commercial algorithms.
+            involves people in something greater than just commercial
+            algorithms.
           </p>
           <p>
             See
@@ -100,7 +101,7 @@
           </h2>
           <p>
             In many parts of Africa, millions of people still rely on slow
-            mobile networks. Case in point, Ethiopia, where deep rural and
+            mobile networks. One example, Ethiopia, where deep rural and
             agricultural communities are accustomed to 2G/3G wires. Or consider
             Sub-Saharan Africa, where almost two-thirds of mobile internet users
             still access the web through 3G devices.

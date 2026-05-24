@@ -37,6 +37,7 @@
       <template v-else>
         <NuxtLink
           to="/login"
+          title="Create a free account to save/delete logs to your private record."
           class="font-heading text-acc1 hover:text-acc1/80 text-sm font-medium tracking-widest transition-colors duration-300"
         >
           LOGIN
@@ -67,6 +68,7 @@
       <template v-else>
         <NuxtLink
           to="/login"
+          title="Create a free account to save/delete logs to your private record."
           class="font-heading text-acc1 hover:text-acc1/80 text-2xl font-medium tracking-widest transition-colors duration-300"
         >
           LOGIN
