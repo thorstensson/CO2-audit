@@ -66,7 +66,7 @@
           <p class="flex items-start gap-2">
             <Icon name="glyphs-poly:leaf" class="mt-1 shrink-0" size="1em" />
             Cutting digital waste lowers operational cloud costs while expanding
-            access for users on limited data plans
+            access for users on limited data plans.
           </p>
           <p class="flex items-start gap-2">
             <Icon name="glyphs-poly:leaf" class="mt-1 shrink-0" size="1em" />
