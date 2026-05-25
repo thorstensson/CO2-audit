@@ -47,9 +47,9 @@
                   v-if="item === 'WHY'"
                   to="/why"
                   :class="
-                    activeRoute === '/why' ? 'text-acc1' : 'text-secondary'
+                    activeRoute === '/why' ? 'text-acc1/80' : 'text-secondary'
                   "
-                  class="hover:text-secondary/80 transition-colors duration-300"
+                  class="hover:text-acc1 transition-colors duration-300"
                 >
                   WHY
                 </NuxtLink>
@@ -57,9 +57,9 @@
                   v-else-if="item === 'HOW'"
                   to="/how"
                   :class="
-                    activeRoute === '/how' ? 'text-acc1' : 'text-secondary'
+                    activeRoute === '/how' ? 'text-acc1/80' : 'text-secondary'
                   "
-                  class="hover:text-secondary/80 transition-colors duration-300"
+                  class="hover:text-acc1 transition-colors duration-300"
                 >
                   HOW
                 </NuxtLink>

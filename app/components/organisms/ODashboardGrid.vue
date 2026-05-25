@@ -145,7 +145,7 @@
       return {
         grade: '—',
         label: 'No Rating Available',
-        style: 'text-gray-500 bg-gray-100 border-gray-200',
+        style: 'text-gray-500 bg-gray-100 border-primary-100',
       }
     }
     const grade = scan.value.sustainabilityIndex
@@ -253,7 +253,7 @@
     <!-- State view if there are no loaded runs -->
     <div
       v-if="!scan && !isScanning"
-      class="bg-primary rounded-2xl border-2 border-dashed border-gray-200 py-16 text-center"
+      class="bg-primary border-primary-100 rounded-2xl border-2 border-dashed py-16 text-center"
     >
       <div
         class="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-gray-50 text-xl font-bold text-gray-400"
@@ -340,7 +340,7 @@
               class="mt-4 flex flex-col items-start gap-4 sm:flex-row sm:items-center"
             >
               <div
-                class="font-heading self-start rounded-xl border px-4 py-2 text-4xl font-black sm:self-auto"
+                class="font-heading flex size-16 items-center justify-center self-start rounded-xl border text-center text-4xl leading-none font-black sm:self-auto"
                 :class="ratingScale?.style"
               >
                 {{ ratingScale?.grade }}
@@ -415,7 +415,9 @@
             </div>
           </div>
           <div class="mt-4 flex flex-wrap items-center gap-2 sm:gap-3">
-            <div class="flex rounded-lg border border-gray-200 p-0.5">
+            <div
+              class="font-heading border-primary-100 flex rounded-lg border p-0.5"
+            >
               <button
                 class="rounded-md px-3 py-1 text-xs font-medium transition"
                 :class="

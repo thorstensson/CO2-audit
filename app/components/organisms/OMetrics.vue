@@ -20,7 +20,7 @@
 </script>
 
 <template>
-  <section class="relative py-16">
+  <section class="relative">
     <div class="mx-auto max-w-screen-2xl px-6">
       <div class="hidden justify-center pb-6 print:flex">
         <MHeader />

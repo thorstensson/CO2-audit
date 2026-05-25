@@ -63,19 +63,19 @@
           class="w-full sm:w-auto"
         />
       </div>
-
-      <div class="flex flex-col items-stretch gap-4 sm:items-center">
-        <!-- 4. Corrected lowercase event binding case to map custom elements natively -->
-        <ClientOnly class="self-center">
-          <altcha-widget
-            ref="altchaWidgetRef"
-            challenge="/api/captcha/challenge"
-            hidefooter
-            :class="{ 'invisible h-0 overflow-hidden': turnstileToken }"
-            @statechange="handleCaptchaState"
-          ></altcha-widget>
-        </ClientOnly>
-      </div>
     </form>
+
+    <div class="flex flex-col items-stretch gap-4 sm:items-center">
+      <!-- 4. Corrected lowercase event binding case to map custom elements natively -->
+      <ClientOnly class="min-h-[70px] self-center">
+        <altcha-widget
+          ref="altchaWidgetRef"
+          challenge="/api/captcha/challenge"
+          hidefooter
+          :class="{ invisible: turnstileToken }"
+          @statechange="handleCaptchaState"
+        ></altcha-widget>
+      </ClientOnly>
+    </div>
   </div>
 </template>

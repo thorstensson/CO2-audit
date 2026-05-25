@@ -124,7 +124,7 @@
           <h2 class="font-heading text-h2 text-acc2 mt-4 font-bold">
             Other stuff
           </h2>
-          <p>Not telling, it's a secret.</p>
+          <p>Other ideas exist; will look at them in due time.</p>
         </div>
       </div>
     </section>

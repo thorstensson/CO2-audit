@@ -35,7 +35,7 @@
 
 <template>
   <footer
-    class="bg-primary-400 text-secondary-200 mt-20 p-12 text-xs print:hidden"
+    class="bg-primary-400 text-secondary-100 mt-20 p-12 text-xs print:hidden"
   >
     <!-- Changed from grid to flex with justify-between -->
     <div
