@@ -23,24 +23,22 @@
 
           <h2 class="font-heading text-h2 text-acc2 mt-4 font-bold">Nuxt 4</h2>
           <p>
-            My favourite progressive meta-framework handles the reactive
-            frontend and layout. Nuxt's Nitro server runs (<code
-              class="rounded bg-green-50 px-1 font-mono text-sm text-green-700"
-              >/server/api/</code
-            >) the backend scripts. Content is sent to the browser in immediate
-            chunks rather than waiting for the whole page to build on the server
-            (I need a dictinonary for SSR).
+            My favorite progressive meta-framework handles the reactive frontend
+            and layout. Nuxt's Nitro server runs the backend scripts. Instead of
+            streaming unrendered pieces, the server code waits for a full
+            response before delivering it to the visitor.
           </p>
 
           <h2 class="font-heading text-h2 text-acc2 mt-4 font-bold">
             Puppeteer
           </h2>
           <p>
-            Puppeteer launches a headless Chromium instance on the server, loads
-            the page like a real user, lets call him Bob, and captures the
-            network response as it arrives. The code measures the actual byte
-            sizes from those response buffers and chops them into HTML, CSS,
-            JavaScript, images, fonts, and other assets.
+            The Puppeteer client connects to Browserless, which launches a
+            headless Chromium instance on the server. Browserless emulates a
+            real website visitor and captures the network data of the targeted
+            page. The app then measures the actual byte sizes of the response
+            buffers, chopping the data into HTML, CSS, JavaScript, images,
+            fonts, and other assets.
           </p>
 
           <h2 class="font-heading text-h2 text-acc2 mt-4 font-bold">
